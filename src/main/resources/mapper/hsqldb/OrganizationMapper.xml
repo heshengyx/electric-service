@@ -16,9 +16,24 @@
 
 	<sql id="sqlQuery">
 		FROM ORGANIZATION a where 1=1
+		<if test="param.name != null and param.name != ''">
+            AND a.NAME like '%'||#{param.name, jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="param.code != null and param.code != ''">
+            AND a.CODE = #{param.code, jdbcType=VARCHAR}
+        </if>
 		<if test="param.parentId != null and param.parentId != ''">
 			AND a.PARENT_ID = #{param.parentId, jdbcType=VARCHAR}
 		</if>
+		<if test="param.parentId == null or param.parentId == ''">
+            AND (a.PARENT_ID is null or a.PARENT_ID = '')
+        </if>
+        <if test="param.createDateBegin != null and param.createDateBegin != ''">
+            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
+        </if>
+        <if test="param.createDateEnd != null and param.createDateEnd != ''">
+            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
+        </if>
 	</sql>
 	
 	<!-- 根据ID查找 -->

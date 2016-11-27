@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.grgbanking.electric.dao.IOrganizationDao;
+import com.grgbanking.electric.data.OrganizationData;
 import com.grgbanking.electric.entity.Organization;
 import com.grgbanking.electric.enums.StateEnum;
 import com.grgbanking.electric.page.IPage;
@@ -52,6 +53,28 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			organization.setId(UUIDGeneratorUtil.getUUID());
 			organization.setCreateTime(new Date());
 			organizations.set(i, organization);
+		}
+		int count = organizationDao.saveBatch(organizations);
+		if (count == 0) {
+			throw new DataAccessResourceFailureException("数据保存失败");
+		}
+	}
+	
+	@Override
+	public void saveBatchData(OrganizationData data) {
+		List<Organization> organizations = new ArrayList<Organization>();
+		Organization organization = null;
+		String[] names = data.getName();
+		String[] codes = data.getCode();
+		for (int i = 0; i < names.length; i++) {
+			organization = new Organization();
+			organization.setId(UUIDGeneratorUtil.getUUID());
+			organization.setName(names[i]);
+			organization.setCode(codes[i]);
+			organization.setParentId(data.getParentId());
+			organization.setCreateTime(new Date());
+			organization.setCreateBy(data.getCreateBy());
+			organizations.add(organization);
 		}
 		int count = organizationDao.saveBatch(organizations);
 		if (count == 0) {
@@ -156,20 +179,22 @@ public class OrganizationServiceImpl implements IOrganizationService {
 					tree.setId(organization.getId());
 					tree.setText(organization.getName());
 					tree.setState(StateEnum.OPEN.name().toLowerCase());
-					
-					Map<String, String> attributes = new HashMap<String, String>();
-					attributes.put("url", "organization/query");
-					tree.setAttributes(attributes);
 					trees.add(tree);
 				} else {
 					List<Tree> treeList = map.get(organization.getParentId());
 					if (CollectionUtils.isEmpty(treeList)) {
 						treeList = new ArrayList<Tree>();
+						tree = new Tree();
+						tree.setId(organization.getId());
+						tree.setText(organization.getName());
+						treeList.add(tree);
+						map.put(organization.getParentId(), treeList);
+					} else {
+						tree = new Tree();
+						tree.setId(organization.getId());
+						tree.setText(organization.getName());
+						treeList.add(tree);
 					}
-					tree = new Tree();
-					tree.setId(organization.getId());
-					tree.setText(organization.getName());
-					treeList.add(tree);
 				}
 			}
 			
