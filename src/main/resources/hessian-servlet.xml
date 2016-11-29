@@ -15,4 +15,14 @@
 		<property name="service" ref="organizationService" />  
 		<property name="serviceInterface" value="com.grgbanking.electric.service.IOrganizationService" />  
 	</bean>
+	
+	<bean name="/terminalService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="terminalService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.ITerminalService" />
+    </bean>
+    <bean name="/styleService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="styleService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IStyleService" />
+    </bean>
+    <!-- hessian-servlet-conf -->
 </beans>
