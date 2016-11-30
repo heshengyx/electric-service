@@ -15,61 +15,77 @@ import com.grgbanking.electric.param.TerminalQueryParam;
 public class TerminalDaoImpl implements ITerminalDao {
 
     @Autowired
-    private ITerminalMapper TerminalMapper;
+    private ITerminalMapper terminalMapper;
     
     @Override
     public int save(Terminal terminal) {
-        return TerminalMapper.save(terminal);
+        return terminalMapper.save(terminal);
     }
 
     @Override
     public int saveBatch(List<Terminal> terminals) {
-        return TerminalMapper.saveBatch(terminals);
+        return terminalMapper.saveBatch(terminals);
     }
     
     @Override
     public int update(Terminal terminal) {
-        return TerminalMapper.update(terminal);
+        return terminalMapper.update(terminal);
     }
+    
+    @Override
+	public int updateByIds(Terminal terminal, List<String> ids) {
+		return terminalMapper.updateByIds(terminal, ids);
+	}
 
     @Override
     public int deleteById(String id) {
-        return TerminalMapper.deleteById(id);
+        return terminalMapper.deleteById(id);
     }
 
     @Override
     public int delete(Terminal terminal) {
-        return TerminalMapper.delete(terminal);
+        return terminalMapper.delete(terminal);
     }
     
     @Override
     public int deleteByIds(List<String> ids) {
-        return TerminalMapper.deleteByIds(ids);
+        return terminalMapper.deleteByIds(ids);
     }
 
     @Override
     public Terminal getById(String id) {
-        return TerminalMapper.getById(id);
+        return terminalMapper.getById(id);
     }
 
     @Override
     public Terminal getData(Terminal terminal) {
-        return TerminalMapper.getData(terminal);
+        return terminalMapper.getData(terminal);
     }
 
     @Override
     public int count(TerminalQueryParam param) {
-        return TerminalMapper.count(param);
+        return terminalMapper.count(param);
     }
 
     @Override
     public List<Terminal> query(TerminalQueryParam param, int start,
             int end) {
-        return TerminalMapper.query(param, start, end);
+        return terminalMapper.query(param, start, end);
+    }
+    
+    @Override
+    public int countData(TerminalQueryParam param) {
+        return terminalMapper.countData(param);
+    }
+
+    @Override
+    public List<Terminal> queryData(TerminalQueryParam param, int start,
+            int end) {
+        return terminalMapper.queryData(param, start, end);
     }
 
     @Override
     public List<Terminal> queryAll(TerminalQueryParam param) {
-        return TerminalMapper.queryAll(param);
+        return terminalMapper.queryAll(param);
     }
 }

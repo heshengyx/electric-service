@@ -28,6 +28,14 @@ public interface ITerminalDao {
     int update(Terminal terminal);
     
     /**
+     * 批量修改
+     * @param terminal
+     * @param ids
+     * @return
+     */
+    int updateByIds(Terminal terminal, List<String> ids);
+    
+    /**
      * 根据ID删除
      * @param id
      */
@@ -68,6 +76,16 @@ public interface ITerminalDao {
      * @return
      */
     List<Terminal> query(TerminalQueryParam param, int start, int end);
+    
+    int countData(TerminalQueryParam param);
+    /**
+     * 分页查询
+     * @param param
+     * @param start
+     * @param end
+     * @return
+     */
+    List<Terminal> queryData(TerminalQueryParam param, int start, int end);
     
     /**
      * 查找全部

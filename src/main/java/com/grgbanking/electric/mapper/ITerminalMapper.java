@@ -28,6 +28,14 @@ public interface ITerminalMapper {
     int update(@Param("param") Terminal terminal);
     
     /**
+     * 批量修改
+     * @param terminal
+     * @param ids
+     * @return
+     */
+    int updateByIds(@Param("param") Terminal terminal, @Param("ids") List<String> ids);
+    
+    /**
      * 根据ID删除
      * @param id
      */
@@ -61,6 +69,10 @@ public interface ITerminalMapper {
     
     int count(@Param("param") TerminalQueryParam param);
     List<Terminal> query(@Param("param") TerminalQueryParam param,
+            @Param("start") int start, @Param("end") int end);
+    
+    int countData(@Param("param") TerminalQueryParam param);
+    List<Terminal> queryData(@Param("param") TerminalQueryParam param,
             @Param("start") int start, @Param("end") int end);
     
     /**

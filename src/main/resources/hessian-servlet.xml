@@ -10,12 +10,10 @@
 		<property name="service" ref="userService" />  
 		<property name="serviceInterface" value="com.grgbanking.electric.service.IUserService" />  
 	</bean>
-	
 	<bean name="/organizationService" class="org.springframework.remoting.caucho.HessianServiceExporter"> 
 		<property name="service" ref="organizationService" />  
 		<property name="serviceInterface" value="com.grgbanking.electric.service.IOrganizationService" />  
 	</bean>
-	
 	<bean name="/terminalService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service" ref="terminalService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.ITerminalService" />
@@ -23,6 +21,10 @@
     <bean name="/styleService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service" ref="styleService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.IStyleService" />
+    </bean>
+    <bean name="/treeService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="treeService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.ITreeService" />
     </bean>
     <!-- hessian-servlet-conf -->
 </beans>

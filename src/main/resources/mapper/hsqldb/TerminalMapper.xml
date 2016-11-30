@@ -19,6 +19,7 @@
 		<id column="ID" property="id" jdbcType="VARCHAR" />
 		<result column="NAME" property="name" jdbcType="VARCHAR" />
 		<result column="CODE" property="code" jdbcType="VARCHAR" />
+		<result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
 		<result column="STYLE_NAME" property="styleName" jdbcType="VARCHAR" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -27,20 +28,46 @@
 	</resultMap>
 
 	<sql id="sqlQuery">
+		FROM TERMINAL a 
+			left join STYLE b on a.STYLE_ID = b.ID
+			left join ORGANIZATION c on a.ORG_ID = c.ID 
+		where 1=1
+		<if test="param.name != null and param.name != ''">
+		 	AND a.NAME = #{param.name}
+		</if>
+		<if test="param.code != null and param.code != ''">
+		 	AND a.CODE = #{param.code}
+		</if>
+		<if test="param.orgId != null and param.orgId != ''">
+		 	AND a.ORG_ID = #{param.orgId}
+		</if>
+		<if test="param.styleId != null and param.styleId != ''">
+		 	AND a.STYLE_ID = #{param.styleId}
+		</if>
+		<if test="param.createDateBegin != null and param.createDateBegin != ''">
+            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
+        </if>
+        <if test="param.createDateEnd != null and param.createDateEnd != ''">
+            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
+        </if>
+	</sql>
+	<sql id="sqlQueryData">
 		FROM TERMINAL a left join STYLE b on a.STYLE_ID = b.ID where 1=1
 		<if test="param.name != null and param.name != ''">
- AND a.NAME = #{param.name}
-</if>
-<if test="param.code != null and param.code != ''">
- AND a.CODE = #{param.code}
-</if>
-<if test="param.orgId != null and param.orgId != ''">
- AND a.ORG_ID = #{param.orgId}
-</if>
-<if test="param.styleId != null and param.styleId != ''">
- AND a.STYLE_ID = #{param.styleId}
-</if>
-
+		 	AND a.NAME = #{param.name}
+		</if>
+		<if test="param.code != null and param.code != ''">
+		 	AND a.CODE = #{param.code}
+		</if>
+		<if test="param.orgId != null and param.orgId != ''">
+		 	AND a.ORG_ID = #{param.orgId}
+		</if>
+		<if test="param.orgId == null or param.orgId == ''">
+            AND (a.ORG_ID is null or a.ORG_ID = '')
+        </if>
+		<if test="param.styleId != null and param.styleId != ''">
+		 	AND a.STYLE_ID = #{param.styleId}
+		</if>
 		<if test="param.createDateBegin != null and param.createDateBegin != ''">
             AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
         </if>
@@ -67,13 +94,30 @@
 			a.ID,
 			a.NAME,
 			a.CODE,
+			c.NAME ORG_NAME,
 			b.NAME STYLE_NAME, 
 			a.CREATE_TIME
 			<include refid="sqlQuery"/>
 			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
 	</select>
+	<select id="countData" resultType="java.lang.Integer">
+		SELECT COUNT(1) <include refid="sqlQueryData"/>
+	</select>
+	<select id="queryData" resultMap="terminalQueryData">
+		SELECT 
+			a.ID,
+			a.NAME,
+			a.CODE,
+			b.NAME STYLE_NAME, 
+			a.CREATE_TIME
+			<include refid="sqlQueryData"/>
+			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
+	</select>
 	<select id="queryAll" resultMap="terminal">
-		SELECT a.* FROM TERMINAL a
+		SELECT a.* FROM TERMINAL a where 1=1
+		<if test="param.orgIdFlag != null and param.orgIdFlag == 'true'">
+		 	AND (a.ORG_ID is not null or a.ORG_ID != '')
+		</if>
 			order by a.CREATE_TIME desc
 	</select>
   	
@@ -82,10 +126,9 @@
 		INSERT INTO TERMINAL
 		  (ID,
 		   NAME,
-CODE,
-ORG_ID,
-STYLE_ID,
-
+		   CODE,
+		   ORG_ID,
+		   STYLE_ID,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
@@ -93,10 +136,9 @@ STYLE_ID,
 		VALUES
 		  (#{param.id, jdbcType=VARCHAR},
 		   #{param.name, jdbcType=VARCHAR},
-#{param.code, jdbcType=VARCHAR},
-#{param.orgId, jdbcType=VARCHAR},
-#{param.styleId, jdbcType=VARCHAR},
-
+		   #{param.code, jdbcType=VARCHAR},
+		   #{param.orgId, jdbcType=VARCHAR},
+		   #{param.styleId, jdbcType=VARCHAR},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
 		   #{param.createBy, jdbcType=VARCHAR},
@@ -108,10 +150,9 @@ STYLE_ID,
 		INSERT INTO TERMINAL
 		  (ID,
 		   NAME,
-CODE,
-ORG_ID,
-STYLE_ID,
-
+		   CODE,
+           ORG_ID,
+           STYLE_ID,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
@@ -120,10 +161,9 @@ STYLE_ID,
 		<foreach collection="list" item="param" index="index" separator="," >
 		  (#{param.id, jdbcType=VARCHAR},
 		   #{param.name, jdbcType=VARCHAR},
-#{param.code, jdbcType=VARCHAR},
-#{param.orgId, jdbcType=VARCHAR},
-#{param.styleId, jdbcType=VARCHAR},
-
+		   #{param.code, jdbcType=VARCHAR},
+		   #{param.orgId, jdbcType=VARCHAR},
+           #{param.styleId, jdbcType=VARCHAR},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
 		   #{param.createBy, jdbcType=VARCHAR},
@@ -135,22 +175,31 @@ STYLE_ID,
 		UPDATE TERMINAL a
 		<set>
 		<if test="param.name != null and param.name != ''">
- a.NAME = #{param.name, jdbcType=VARCHAR},
-</if>
-<if test="param.code != null and param.code != ''">
- a.CODE = #{param.code, jdbcType=VARCHAR},
-</if>
-<if test="param.orgId != null and param.orgId != ''">
- a.ORG_ID = #{param.orgId, jdbcType=VARCHAR},
-</if>
-<if test="param.styleId != null and param.styleId != ''">
- a.STYLE_ID = #{param.styleId, jdbcType=VARCHAR},
-</if>
-
+		 	a.NAME = #{param.name, jdbcType=VARCHAR},
+		</if>
+		<if test="param.code != null and param.code != ''">
+		 	a.CODE = #{param.code, jdbcType=VARCHAR},
+		</if>
+		<if test="param.orgId != null and param.orgId != ''">
+		 	a.ORG_ID = #{param.orgId, jdbcType=VARCHAR},
+		</if>
+		<if test="param.styleId != null and param.styleId != ''">
+		 	a.STYLE_ID = #{param.styleId, jdbcType=VARCHAR},
+		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
 		</set>
 		WHERE a.ID = #{param.id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByIds">
+		UPDATE TERMINAL a SET
+			a.ORG_ID = #{param.orgId, jdbcType=VARCHAR},
+			a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
+			a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
+		WHERE a.ID in (
+		<foreach collection="ids" item="id" index="index" separator="," >
+		  #{id, jdbcType=VARCHAR}
+		</foreach>)
 	</update>
 	
 	<!-- 根据ID删除-->
