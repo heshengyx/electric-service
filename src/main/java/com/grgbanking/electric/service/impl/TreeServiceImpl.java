@@ -79,6 +79,9 @@ public class TreeServiceImpl implements ITreeService {
 						tree.setId(organization.getId());
 						tree.setText(organization.getName());
 						tree.setChildren(terminalMap.get(organization.getId()));
+						Map<String, String> attributes = new HashMap<String, String>(1);
+						attributes.put("parentId", organization.getParentId());
+						tree.setAttributes(attributes);
 						treeList.add(tree);
 						organizationMap.put(organization.getParentId(), treeList);
 					} else {
@@ -86,6 +89,9 @@ public class TreeServiceImpl implements ITreeService {
 						tree.setId(organization.getId());
 						tree.setText(organization.getName());
 						tree.setChildren(terminalMap.get(organization.getId()));
+						Map<String, String> attributes = new HashMap<String, String>(1);
+						attributes.put("parentId", organization.getParentId());
+						tree.setAttributes(attributes);
 						treeList.add(tree);
 					}
 				}
