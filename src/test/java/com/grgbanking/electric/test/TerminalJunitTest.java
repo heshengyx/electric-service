@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.grgbanking.electric.entity.Terminal;
+import com.grgbanking.electric.param.TerminalQueryParam;
 import com.grgbanking.electric.service.ITerminalService;
 
 public class TerminalJunitTest extends BaseJunitTest {
@@ -22,5 +23,14 @@ public class TerminalJunitTest extends BaseJunitTest {
 			terminals.add(terminal);
 		}
 		terminalService.saveBatch(terminals);
+	}
+	
+	@Test
+	public void testQueryAll() {
+		TerminalQueryParam param = new TerminalQueryParam();
+		List<Terminal> terminals = terminalService.queryAll(param);
+		for (Terminal terminal : terminals) {
+			System.out.println(terminal.getId());
+		}
 	}
 }

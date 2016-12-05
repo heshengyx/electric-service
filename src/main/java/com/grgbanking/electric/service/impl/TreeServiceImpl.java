@@ -34,6 +34,85 @@ public class TreeServiceImpl implements ITreeService {
 		List<Tree> trees = null; 
 		List<Organization> organizations = organizationDao.queryAll(param);
 		if (!CollectionUtils.isEmpty(organizations)) {
+			Map<String, Tree> treeMap = new HashMap<String, Tree>();
+			Tree tree = null;
+			Map<String, List<Tree>> terminalMap = new HashMap<String, List<Tree>>();
+			
+			String terminalFlag = param.getTerminalFlag();
+			if ("1".equals(terminalFlag)) {
+				//查询所有已分配的终端
+				TerminalQueryParam queryParam = new TerminalQueryParam();
+				queryParam.setOrgIdFlag("true");
+				List<Terminal> terminals = terminalDao.queryAll(queryParam);
+				
+				for (Terminal terminal : terminals) {
+					List<Tree> treeList = terminalMap.get(terminal.getOrgId());
+					if (CollectionUtils.isEmpty(treeList)) {
+						treeList = new ArrayList<Tree>();
+						tree = new Tree();
+						tree.setId(terminal.getId());
+						tree.setText(terminal.getName());
+						Map<String, String> attributes = new HashMap<String, String>(1);
+						attributes.put("isTerminal", "true");
+						tree.setAttributes(attributes);
+						treeList.add(tree);
+						terminalMap.put(terminal.getOrgId(), treeList);
+					} else {
+						tree = new Tree();
+						tree.setId(terminal.getId());
+						tree.setText(terminal.getName());
+						Map<String, String> attributes = new HashMap<String, String>(1);
+						attributes.put("isTerminal", "true");
+						tree.setAttributes(attributes);
+						treeList.add(tree);
+					}
+				}
+			}
+			
+			//初始化tree
+			for (Organization organization : organizations) {
+				tree = new Tree();
+				tree.setId(organization.getId());
+				tree.setText(organization.getName());
+				tree.setState(StateEnum.OPEN.name().toLowerCase());
+				tree.setParentId(organization.getParentId());
+				treeMap.put(organization.getId(), tree);
+			}
+			
+			//构造tree
+			for (Map.Entry<String, Tree> entry : treeMap.entrySet()) {
+				tree = entry.getValue();
+				if (!StringUtils.isEmpty(tree.getParentId())) {
+					Tree parentTree = treeMap.get(tree.getParentId());
+					trees = parentTree.getChildren();
+					if (trees == null) {
+						trees = new ArrayList<Tree>();
+					}
+					List<Tree> childTree = terminalMap.get(tree.getId());
+					if (!CollectionUtils.isEmpty(childTree)) {
+						tree.setChildren(childTree);
+					}
+					trees.add(tree);
+					parentTree.setChildren(trees);
+				}
+			}
+			
+			//取parentId为空的父节点
+			trees = new ArrayList<Tree>();
+			for (Map.Entry<String, Tree> entry : treeMap.entrySet()) {
+				tree = entry.getValue();
+				if (StringUtils.isEmpty(tree.getParentId())) {
+					trees.add(tree);
+				}
+			}
+		}
+		return trees;
+	}
+
+	private void show(OrganizationQueryParam param) {
+		List<Tree> trees = null; 
+		List<Organization> organizations = organizationDao.queryAll(param);
+		if (!CollectionUtils.isEmpty(organizations)) {
 			trees = new ArrayList<Tree>(); 
 			Tree tree = null;
 			Map<String, List<Tree>> terminalMap = new HashMap<String, List<Tree>>();
@@ -105,7 +184,5 @@ public class TreeServiceImpl implements ITreeService {
 				}
 			}
 		}
-		return trees;
 	}
-
 }

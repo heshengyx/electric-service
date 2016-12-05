@@ -26,5 +26,9 @@
         <property name="service" ref="treeService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.ITreeService" />
     </bean>
+    <bean name="/instantaneousService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="instantaneousService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IInstantaneousService" />
+    </bean>
     <!-- hessian-servlet-conf -->
 </beans>
