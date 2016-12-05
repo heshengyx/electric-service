@@ -30,7 +30,7 @@ public class TerminalJunitTest extends BaseJunitTest {
 		TerminalQueryParam param = new TerminalQueryParam();
 		List<Terminal> terminals = terminalService.queryAll(param);
 		for (Terminal terminal : terminals) {
-			System.out.println(terminal.getId());
+			System.out.println(terminal.getId() + "," + terminal.getOrgId());
 		}
 	}
 }

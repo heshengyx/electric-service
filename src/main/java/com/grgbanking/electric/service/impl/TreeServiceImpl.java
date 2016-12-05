@@ -19,6 +19,7 @@ import com.grgbanking.electric.param.OrganizationQueryParam;
 import com.grgbanking.electric.param.TerminalQueryParam;
 import com.grgbanking.electric.service.ITreeService;
 import com.grgbanking.electric.tree.Tree;
+import com.grgbanking.electric.util.DateUtil;
 
 @Service("treeService")
 public class TreeServiceImpl implements ITreeService {
@@ -76,6 +77,10 @@ public class TreeServiceImpl implements ITreeService {
 				tree.setText(organization.getName());
 				tree.setState(StateEnum.OPEN.name().toLowerCase());
 				tree.setParentId(organization.getParentId());
+				Map<String, String> attributes = new HashMap<String, String>(1);
+				attributes.put("code", organization.getCode());
+				attributes.put("createTime", DateUtil.getDateTime(organization.getCreateTime()));
+				tree.setAttributes(attributes);
 				treeMap.put(organization.getId(), tree);
 			}
 			
