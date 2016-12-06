@@ -11,11 +11,14 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.grgbanking.electric.dao.IOrganizationDao;
+import com.grgbanking.electric.dao.IPermissionDao;
 import com.grgbanking.electric.dao.ITerminalDao;
 import com.grgbanking.electric.entity.Organization;
+import com.grgbanking.electric.entity.Permission;
 import com.grgbanking.electric.entity.Terminal;
 import com.grgbanking.electric.enums.StateEnum;
 import com.grgbanking.electric.param.OrganizationQueryParam;
+import com.grgbanking.electric.param.PermissionQueryParam;
 import com.grgbanking.electric.param.TerminalQueryParam;
 import com.grgbanking.electric.service.ITreeService;
 import com.grgbanking.electric.tree.Tree;
@@ -29,6 +32,9 @@ public class TreeServiceImpl implements ITreeService {
 	
 	@Autowired
 	private ITerminalDao terminalDao;
+	
+	@Autowired
+	private IPermissionDao permissionDao;
 	
 	@Override
 	public List<Tree> tree(OrganizationQueryParam param) {
@@ -114,80 +120,51 @@ public class TreeServiceImpl implements ITreeService {
 		return trees;
 	}
 
-	private void show(OrganizationQueryParam param) {
+	@Override
+	public List<Tree> treePermission(PermissionQueryParam param) {
 		List<Tree> trees = null; 
-		List<Organization> organizations = organizationDao.queryAll(param);
-		if (!CollectionUtils.isEmpty(organizations)) {
-			trees = new ArrayList<Tree>(); 
+		List<Permission> permissions = permissionDao.queryAll(param);
+		if (!CollectionUtils.isEmpty(permissions)) {
+			Map<String, Tree> treeMap = new HashMap<String, Tree>();
 			Tree tree = null;
-			Map<String, List<Tree>> terminalMap = new HashMap<String, List<Tree>>();
 			
-			String terminalFlag = param.getTerminalFlag();
-			if ("1".equals(terminalFlag)) {
-				//查询所有已分配的终端
-				TerminalQueryParam queryParam = new TerminalQueryParam();
-				queryParam.setOrgIdFlag("true");
-				List<Terminal> terminals = terminalDao.queryAll(queryParam);
-				
-				for (Terminal terminal : terminals) {
-					List<Tree> treeList = terminalMap.get(terminal.getOrgId());
-					if (CollectionUtils.isEmpty(treeList)) {
-						treeList = new ArrayList<Tree>();
-						tree = new Tree();
-						tree.setId(terminal.getId());
-						tree.setText(terminal.getName());
-						treeList.add(tree);
-						terminalMap.put(terminal.getOrgId(), treeList);
-					} else {
-						tree = new Tree();
-						tree.setId(terminal.getId());
-						tree.setText(terminal.getName());
-						treeList.add(tree);
-					}
-				}
+			//初始化tree
+			for (Permission permission : permissions) {
+				tree = new Tree();
+				tree.setId(permission.getId());
+				tree.setText(permission.getName());
+				tree.setState(StateEnum.OPEN.name().toLowerCase());
+				tree.setParentId(permission.getParentId());
+				Map<String, String> attributes = new HashMap<String, String>(1);
+				attributes.put("url", permission.getUrl());
+				attributes.put("createTime", DateUtil.getDateTime(permission.getCreateTime()));
+				tree.setAttributes(attributes);
+				treeMap.put(permission.getId(), tree);
 			}
 			
-			Map<String, List<Tree>> organizationMap = new HashMap<String, List<Tree>>();
-			for (Organization organization : organizations) {
-				if (StringUtils.isEmpty(organization.getParentId())) {
-					tree = new Tree();
-					tree.setId(organization.getId());
-					tree.setText(organization.getName());
-					tree.setState(StateEnum.OPEN.name().toLowerCase());
+			//构造tree
+			for (Map.Entry<String, Tree> entry : treeMap.entrySet()) {
+				tree = entry.getValue();
+				if (!StringUtils.isEmpty(tree.getParentId())) {
+					Tree parentTree = treeMap.get(tree.getParentId());
+					trees = parentTree.getChildren();
+					if (trees == null) {
+						trees = new ArrayList<Tree>();
+					}
 					trees.add(tree);
-				} else {
-					List<Tree> treeList = organizationMap.get(organization.getParentId());
-					if (CollectionUtils.isEmpty(treeList)) {
-						treeList = new ArrayList<Tree>();
-						tree = new Tree();
-						tree.setId(organization.getId());
-						tree.setText(organization.getName());
-						tree.setChildren(terminalMap.get(organization.getId()));
-						Map<String, String> attributes = new HashMap<String, String>(1);
-						attributes.put("parentId", organization.getParentId());
-						tree.setAttributes(attributes);
-						treeList.add(tree);
-						organizationMap.put(organization.getParentId(), treeList);
-					} else {
-						tree = new Tree();
-						tree.setId(organization.getId());
-						tree.setText(organization.getName());
-						tree.setChildren(terminalMap.get(organization.getId()));
-						Map<String, String> attributes = new HashMap<String, String>(1);
-						attributes.put("parentId", organization.getParentId());
-						tree.setAttributes(attributes);
-						treeList.add(tree);
-					}
+					parentTree.setChildren(trees);
 				}
 			}
 			
-			
-			for (Tree _tree : trees) {
-				List<Tree> treeList = organizationMap.get(_tree.getId());
-				if (!CollectionUtils.isEmpty(treeList)) {
-					_tree.setChildren(treeList);
+			//取parentId为空的父节点
+			trees = new ArrayList<Tree>();
+			for (Map.Entry<String, Tree> entry : treeMap.entrySet()) {
+				tree = entry.getValue();
+				if (StringUtils.isEmpty(tree.getParentId())) {
+					trees.add(tree);
 				}
 			}
 		}
+		return trees;
 	}
 }
