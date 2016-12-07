@@ -1,5 +1,6 @@
 package com.grgbanking.electric.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import com.grgbanking.electric.dao.IUserRoleDao;
 import com.grgbanking.electric.data.UserRoleData;
+import com.grgbanking.electric.entity.RoleOrganization;
 import com.grgbanking.electric.entity.UserRole;
 import com.grgbanking.electric.page.IPage;
 import com.grgbanking.electric.page.IPagination;
@@ -59,7 +61,27 @@ throw new DataAccessResourceFailureException("采样时间不能为空");
     
     @Override
     public void saveBatchData(UserRoleData data) {
-                //
+    	//删除用户角色树
+    	UserRole userRole = new UserRole();
+    	userRole.setUserId(data.getUserId());
+    	userRoleDao.delete(userRole);
+    	
+    	//保存用户角色树
+		List<UserRole> userRoles = new ArrayList<UserRole>();
+		String[] roleIds = data.getRoleId();
+		for (int i = 0; i < roleIds.length; i++) {
+			userRole = new UserRole();
+			userRole.setId(UUIDGeneratorUtil.getUUID());
+			userRole.setUserId(data.getUserId());
+			userRole.setRoleId(roleIds[i]);
+			userRole.setCreateBy(data.getCreateBy());
+			userRole.setCreateTime(new Date());
+			userRoles.add(userRole);
+		}
+		int count = userRoleDao.saveBatch(userRoles);
+		if (count == 0) {
+			throw new DataAccessResourceFailureException("数据保存失败");
+		}
     }
     
     @Override

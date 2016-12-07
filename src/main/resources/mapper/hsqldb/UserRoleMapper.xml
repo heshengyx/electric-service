@@ -4,8 +4,7 @@
 	<resultMap type="com.grgbanking.electric.entity.UserRole" id="userRole">
 		<id column="ID" property="id" jdbcType="VARCHAR" />
 		<result column="USER_ID" property="userId" jdbcType="VARCHAR" />
-<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
-
+        <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -44,6 +43,7 @@
 	</select>
 	<select id="queryAll" resultMap="userRole">
 		SELECT a.* FROM USER_ROLE a
+		    where a.USER_ID = #{param.userId, jdbcType=VARCHAR}
 			order by a.CREATE_TIME desc
 	</select>
   	
@@ -116,7 +116,7 @@ ROLE_ID,
 	
 	<!-- 多条件删除 -->
 	<delete id="delete">
-		delete from USER_ROLE a where a.ID = #{param.id, jdbcType=VARCHAR}
+		delete from USER_ROLE a where a.USER_ID = #{param.userId, jdbcType=VARCHAR}
 	</delete>
 	
 	<!-- 根据ID批量删除-->

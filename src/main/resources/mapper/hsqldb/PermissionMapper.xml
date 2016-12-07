@@ -4,6 +4,7 @@
 	<resultMap type="com.grgbanking.electric.entity.Permission" id="permission">
 		<id column="ID" property="id" jdbcType="VARCHAR" />
 		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="CODE" property="code" jdbcType="VARCHAR" />
 		<result column="URL" property="url" jdbcType="VARCHAR" />
 		<result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
@@ -58,6 +59,7 @@
 		INSERT INTO PERMISSION
 		  (ID,
 		   	NAME,
+		   	CODE,
 			URL,
 			PARENT_ID,
 		   	VERSION,
@@ -67,6 +69,7 @@
 		VALUES
 		  (#{param.id, jdbcType=VARCHAR},
 		   	#{param.name, jdbcType=VARCHAR},
+		   	#{param.code, jdbcType=VARCHAR},
 			#{param.url, jdbcType=VARCHAR},
 			#{param.parentId, jdbcType=VARCHAR},
 		   	#{param.version, jdbcType=INTEGER},
@@ -80,6 +83,7 @@
 		INSERT INTO PERMISSION
 		  (ID,
 		   	NAME,
+		   	CODE,
 			URL,
 			PARENT_ID,
 		   	VERSION,
@@ -90,6 +94,7 @@
 		<foreach collection="list" item="param" index="index" separator="," >
 		  (#{param.id, jdbcType=VARCHAR},
 		   	#{param.name, jdbcType=VARCHAR},
+		   	#{param.code, jdbcType=VARCHAR},
 			#{param.url, jdbcType=VARCHAR},
 			#{param.parentId, jdbcType=VARCHAR},
 		   	#{param.version, jdbcType=INTEGER},
@@ -105,6 +110,9 @@
 		<if test="param.name != null and param.name != ''">
 		 a.NAME = #{param.name, jdbcType=VARCHAR},
 		</if>
+		<if test="param.code != null and param.code != ''">
+         a.CODE = #{param.code, jdbcType=VARCHAR},
+        </if>
 		<if test="param.url != null and param.url != ''">
 		 a.URL = #{param.url, jdbcType=VARCHAR},
 		</if>

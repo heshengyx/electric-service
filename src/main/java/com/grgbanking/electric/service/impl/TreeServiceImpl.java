@@ -12,20 +12,26 @@ import org.springframework.util.StringUtils;
 
 import com.grgbanking.electric.dao.IOrganizationDao;
 import com.grgbanking.electric.dao.IPermissionDao;
+import com.grgbanking.electric.dao.IRoleDao;
 import com.grgbanking.electric.dao.IRoleOrganizationDao;
 import com.grgbanking.electric.dao.IRolePermissionDao;
 import com.grgbanking.electric.dao.ITerminalDao;
+import com.grgbanking.electric.dao.IUserRoleDao;
 import com.grgbanking.electric.entity.Organization;
 import com.grgbanking.electric.entity.Permission;
+import com.grgbanking.electric.entity.Role;
 import com.grgbanking.electric.entity.RoleOrganization;
 import com.grgbanking.electric.entity.RolePermission;
 import com.grgbanking.electric.entity.Terminal;
+import com.grgbanking.electric.entity.UserRole;
 import com.grgbanking.electric.enums.StateEnum;
 import com.grgbanking.electric.param.OrganizationQueryParam;
 import com.grgbanking.electric.param.PermissionQueryParam;
 import com.grgbanking.electric.param.RoleOrganizationQueryParam;
 import com.grgbanking.electric.param.RolePermissionQueryParam;
+import com.grgbanking.electric.param.RoleQueryParam;
 import com.grgbanking.electric.param.TerminalQueryParam;
+import com.grgbanking.electric.param.UserRoleQueryParam;
 import com.grgbanking.electric.service.ITreeService;
 import com.grgbanking.electric.tree.Tree;
 import com.grgbanking.electric.util.DateUtil;
@@ -43,10 +49,16 @@ public class TreeServiceImpl implements ITreeService {
 	private IPermissionDao permissionDao;
 	
 	@Autowired
+    private IRoleDao roleDao;
+	
+	@Autowired
     private IRolePermissionDao rolePermissionDao;
 	
 	@Autowired
 	private IRoleOrganizationDao roleOrganizationDao;
+	
+	@Autowired
+	private IUserRoleDao UserRoleDao;
 	
 	@Override
 	public List<Tree> treeOrganization(OrganizationQueryParam param) {
@@ -185,6 +197,7 @@ public class TreeServiceImpl implements ITreeService {
 				}
 				
 				Map<String, String> attributes = new HashMap<String, String>(1);
+				attributes.put("code", permission.getCode());
 				attributes.put("url", permission.getUrl());
 				attributes.put("createTime", DateUtil.getDateTime(permission.getCreateTime()));
 				tree.setAttributes(attributes);
@@ -212,6 +225,44 @@ public class TreeServiceImpl implements ITreeService {
 				if (StringUtils.isEmpty(tree.getParentId())) {
 					trees.add(tree);
 				}
+			}
+		}
+		return trees;
+	}
+
+	@Override
+	public List<Tree> treeRole(RoleQueryParam param) {
+		List<Tree> trees = null; 
+		List<Role> roles = roleDao.queryAll(param);
+		if (!CollectionUtils.isEmpty(roles)) {
+			trees = new ArrayList<Tree>();
+			Tree tree = null;
+			
+			//查找已分配的角色
+			Map<String, String> roleMap = new HashMap<String, String>(1);
+			String userId = param.getUserId();
+			if (!StringUtils.isEmpty(userId)) {
+				UserRoleQueryParam queryParam = new UserRoleQueryParam();
+				queryParam.setUserId(userId);
+				List<UserRole> userRoles = UserRoleDao.queryAll(queryParam);
+				for (UserRole userRole : userRoles) {
+					roleMap.put(userRole.getRoleId(), userRole.getRoleId());
+				}
+			}
+			
+			//初始化tree
+			for (Role role : roles) {
+				tree = new Tree();
+				tree.setId(role.getId());
+				tree.setText(role.getName());
+				tree.setState(StateEnum.OPEN.name().toLowerCase());
+				if (!StringUtils.isEmpty(userId)) {
+					String roleId = roleMap.get(role.getId());
+					if (!StringUtils.isEmpty(roleId)) {
+						tree.setChecked(true);
+					}
+				}
+				trees.add(tree);
 			}
 		}
 		return trees;
