@@ -75,4 +75,9 @@ public interface IPermissionDao {
      * @return
      */
     List<Permission> queryAll(PermissionQueryParam param);
+    
+    /**
+     * 查找用户权限
+     */
+    List<Permission> queryPermissions(PermissionQueryParam param);
 }

@@ -9,68 +9,68 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.grgbanking.electric.dao.IRoleDao;
-import com.grgbanking.electric.data.RoleData;
-import com.grgbanking.electric.entity.Role;
+import com.grgbanking.electric.dao.IEventDao;
+import com.grgbanking.electric.data.EventData;
+import com.grgbanking.electric.entity.Event;
 import com.grgbanking.electric.page.IPage;
 import com.grgbanking.electric.page.IPagination;
 import com.grgbanking.electric.page.Pager;
-import com.grgbanking.electric.param.RoleQueryParam;
-import com.grgbanking.electric.service.IRoleService;
+import com.grgbanking.electric.param.EventQueryParam;
+import com.grgbanking.electric.service.IEventService;
 import com.grgbanking.electric.util.UUIDGeneratorUtil;
 
 
-@Service("roleService")
-public class RoleServiceImpl implements IRoleService {
+@Service("eventService")
+public class EventServiceImpl implements IEventService {
 
     @Autowired
-    private IRoleDao roleDao;
+    private IEventDao eventDao;
     
     @Override
-    public void save(Role role) {
-        String name = role.getName();
+    public void save(Event event) {
+        String name = event.getName();
 if (StringUtils.isEmpty(name)) {
-throw new DataAccessResourceFailureException("监测点编号不能为空");
+throw new DataAccessResourceFailureException("采样时间不能为空");
 }
 
-        role.setId(UUIDGeneratorUtil.getUUID());
-        role.setCreateTime(new Date());
+        event.setId(UUIDGeneratorUtil.getUUID());
+        event.setCreateTime(new Date());
         
-        int count = roleDao.save(role);
+        int count = eventDao.save(event);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据保存失败");
         }
     }
 
     @Override
-    public void saveBatch(List<Role> roles) {
-        Role role = null;
-        for (int i = 0; i < roles.size(); i++) {
-            role = roles.get(i);
-            role.setId(UUIDGeneratorUtil.getUUID());
-            role.setCreateTime(new Date());
-            roles.set(i, role);
+    public void saveBatch(List<Event> events) {
+        Event event = null;
+        for (int i = 0; i < events.size(); i++) {
+            event = events.get(i);
+            event.setId(UUIDGeneratorUtil.getUUID());
+            event.setCreateTime(new Date());
+            events.set(i, event);
         }
-        int count = roleDao.saveBatch(roles);
+        int count = eventDao.saveBatch(events);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据保存失败");
         }
     }
     
     @Override
-    public void saveBatchData(RoleData data) {
+    public void saveBatchData(EventData data) {
                 //
     }
     
     @Override
-    public void update(Role role) {
-        String name = role.getName();
+    public void update(Event event) {
+        String name = event.getName();
 if (StringUtils.isEmpty(name)) {
-throw new DataAccessResourceFailureException("监测点编号不能为空");
+throw new DataAccessResourceFailureException("采样时间不能为空");
 }
 
-        role.setUpdateTime(new Date());
-        int count = roleDao.update(role);
+        event.setUpdateTime(new Date());
+        int count = eventDao.update(event);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据修改失败");
         }
@@ -79,7 +79,7 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     @Override
     public void deleteById(String id) {
         if (!StringUtils.isEmpty(id)) {
-            int count = roleDao.deleteById(id);
+            int count = eventDao.deleteById(id);
             if (count == 0) {
                 throw new DataAccessResourceFailureException("数据删除失败");
             }
@@ -91,7 +91,7 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     @Override
     public void deleteByIds(List<String> ids) {
         if (!CollectionUtils.isEmpty(ids)) {
-            int count = roleDao.deleteByIds(ids);
+            int count = eventDao.deleteByIds(ids);
             if (count == 0) {
                 throw new DataAccessResourceFailureException("数据删除失败");
             }
@@ -101,52 +101,52 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     }
 
     @Override
-    public void delete(Role role) {
-        int count = roleDao.delete(role);
+    public void delete(Event event) {
+        int count = eventDao.delete(event);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据删除失败");
         }
     }
 
     @Override
-    public Role getById(String id) {
-        return roleDao.getById(id);
+    public Event getById(String id) {
+        return eventDao.getById(id);
     }
 
     @Override
-    public Role getData(Role role) {
-        return roleDao.getData(role);
+    public Event getData(Event event) {
+        return eventDao.getData(event);
     }
     
     @Override
-    public void saveOrUpdate(Role role) {
-        if (StringUtils.isEmpty(role.getId())) {
-            save(role);
+    public void saveOrUpdate(Event event) {
+        if (StringUtils.isEmpty(event.getId())) {
+            save(event);
         } else {
-            update(role);
+            update(event);
         }
     }
 
     @Override
-    public IPage<Role> query(final RoleQueryParam param) {
+    public IPage<Event> query(final EventQueryParam param) {
         int page = param.getPage() <= 0 ? 1 : param.getPage();
         int rows = param.getRows() <= 0 ? 10 : param.getRows();
-        return Pager.execute(new IPagination<Role>() {
+        return Pager.execute(new IPagination<Event>() {
 
             @Override
             public int count() {
-                return roleDao.count(param);
+                return eventDao.count(param);
             }
 
             @Override
-            public List<Role> query(int start, int end) {
-                return roleDao.query(param, start, end);
+            public List<Event> query(int start, int end) {
+                return eventDao.query(param, start, end);
             }
         }, page, rows);
     }
     
     @Override
-	public List<Role> queryAll(RoleQueryParam param) {
-		return roleDao.queryAll(param);
+	public List<Event> queryAll(EventQueryParam param) {
+		return eventDao.queryAll(param);
 	}
 }

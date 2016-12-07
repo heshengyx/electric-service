@@ -1,6 +1,5 @@
 package com.grgbanking.electric.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -149,5 +148,10 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     @Override
 	public List<Permission> queryAll(PermissionQueryParam param) {
 		return permissionDao.queryAll(param);
+	}
+
+	@Override
+	public List<Permission> queryPermissions(PermissionQueryParam param) {
+		return permissionDao.queryPermissions(param);
 	}
 }

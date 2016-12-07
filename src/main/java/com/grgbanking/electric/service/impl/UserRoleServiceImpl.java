@@ -1,0 +1,152 @@
+package com.grgbanking.electric.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
+import com.grgbanking.electric.dao.IUserRoleDao;
+import com.grgbanking.electric.data.UserRoleData;
+import com.grgbanking.electric.entity.UserRole;
+import com.grgbanking.electric.page.IPage;
+import com.grgbanking.electric.page.IPagination;
+import com.grgbanking.electric.page.Pager;
+import com.grgbanking.electric.param.UserRoleQueryParam;
+import com.grgbanking.electric.service.IUserRoleService;
+import com.grgbanking.electric.util.UUIDGeneratorUtil;
+
+
+@Service("userRoleService")
+public class UserRoleServiceImpl implements IUserRoleService {
+
+    @Autowired
+    private IUserRoleDao userRoleDao;
+    
+    @Override
+    public void save(UserRole userRole) {
+        String userId = userRole.getUserId();
+if (StringUtils.isEmpty(userId)) {
+throw new DataAccessResourceFailureException("采样时间不能为空");
+}
+
+        userRole.setId(UUIDGeneratorUtil.getUUID());
+        userRole.setCreateTime(new Date());
+        
+        int count = userRoleDao.save(userRole);
+        if (count == 0) {
+            throw new DataAccessResourceFailureException("数据保存失败");
+        }
+    }
+
+    @Override
+    public void saveBatch(List<UserRole> userRoles) {
+        UserRole userRole = null;
+        for (int i = 0; i < userRoles.size(); i++) {
+            userRole = userRoles.get(i);
+            userRole.setId(UUIDGeneratorUtil.getUUID());
+            userRole.setCreateTime(new Date());
+            userRoles.set(i, userRole);
+        }
+        int count = userRoleDao.saveBatch(userRoles);
+        if (count == 0) {
+            throw new DataAccessResourceFailureException("数据保存失败");
+        }
+    }
+    
+    @Override
+    public void saveBatchData(UserRoleData data) {
+                //
+    }
+    
+    @Override
+    public void update(UserRole userRole) {
+        String userId = userRole.getUserId();
+if (StringUtils.isEmpty(userId)) {
+throw new DataAccessResourceFailureException("采样时间不能为空");
+}
+
+        userRole.setUpdateTime(new Date());
+        int count = userRoleDao.update(userRole);
+        if (count == 0) {
+            throw new DataAccessResourceFailureException("数据修改失败");
+        }
+    }
+
+    @Override
+    public void deleteById(String id) {
+        if (!StringUtils.isEmpty(id)) {
+            int count = userRoleDao.deleteById(id);
+            if (count == 0) {
+                throw new DataAccessResourceFailureException("数据删除失败");
+            }
+        } else {
+            throw new DataAccessResourceFailureException("数据删除失败");
+        }
+    }
+    
+    @Override
+    public void deleteByIds(List<String> ids) {
+        if (!CollectionUtils.isEmpty(ids)) {
+            int count = userRoleDao.deleteByIds(ids);
+            if (count == 0) {
+                throw new DataAccessResourceFailureException("数据删除失败");
+            }
+        } else {
+            throw new DataAccessResourceFailureException("数据删除失败");
+        }
+    }
+
+    @Override
+    public void delete(UserRole userRole) {
+        int count = userRoleDao.delete(userRole);
+        if (count == 0) {
+            throw new DataAccessResourceFailureException("数据删除失败");
+        }
+    }
+
+    @Override
+    public UserRole getById(String id) {
+        return userRoleDao.getById(id);
+    }
+
+    @Override
+    public UserRole getData(UserRole userRole) {
+        return userRoleDao.getData(userRole);
+    }
+    
+    @Override
+    public void saveOrUpdate(UserRole userRole) {
+        if (StringUtils.isEmpty(userRole.getId())) {
+            save(userRole);
+        } else {
+            update(userRole);
+        }
+    }
+
+    @Override
+    public IPage<UserRole> query(final UserRoleQueryParam param) {
+        int page = param.getPage() <= 0 ? 1 : param.getPage();
+        int rows = param.getRows() <= 0 ? 10 : param.getRows();
+        return Pager.execute(new IPagination<UserRole>() {
+
+            @Override
+            public int count() {
+                return userRoleDao.count(param);
+            }
+
+            @Override
+            public List<UserRole> query(int start, int end) {
+                return userRoleDao.query(param, start, end);
+            }
+        }, page, rows);
+    }
+    
+    @Override
+	public List<UserRole> queryAll(UserRoleQueryParam param) {
+		return userRoleDao.queryAll(param);
+	}
+}

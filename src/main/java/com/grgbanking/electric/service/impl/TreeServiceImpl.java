@@ -12,13 +12,19 @@ import org.springframework.util.StringUtils;
 
 import com.grgbanking.electric.dao.IOrganizationDao;
 import com.grgbanking.electric.dao.IPermissionDao;
+import com.grgbanking.electric.dao.IRoleOrganizationDao;
+import com.grgbanking.electric.dao.IRolePermissionDao;
 import com.grgbanking.electric.dao.ITerminalDao;
 import com.grgbanking.electric.entity.Organization;
 import com.grgbanking.electric.entity.Permission;
+import com.grgbanking.electric.entity.RoleOrganization;
+import com.grgbanking.electric.entity.RolePermission;
 import com.grgbanking.electric.entity.Terminal;
 import com.grgbanking.electric.enums.StateEnum;
 import com.grgbanking.electric.param.OrganizationQueryParam;
 import com.grgbanking.electric.param.PermissionQueryParam;
+import com.grgbanking.electric.param.RoleOrganizationQueryParam;
+import com.grgbanking.electric.param.RolePermissionQueryParam;
 import com.grgbanking.electric.param.TerminalQueryParam;
 import com.grgbanking.electric.service.ITreeService;
 import com.grgbanking.electric.tree.Tree;
@@ -36,8 +42,14 @@ public class TreeServiceImpl implements ITreeService {
 	@Autowired
 	private IPermissionDao permissionDao;
 	
+	@Autowired
+    private IRolePermissionDao rolePermissionDao;
+	
+	@Autowired
+	private IRoleOrganizationDao roleOrganizationDao;
+	
 	@Override
-	public List<Tree> tree(OrganizationQueryParam param) {
+	public List<Tree> treeOrganization(OrganizationQueryParam param) {
 		List<Tree> trees = null; 
 		List<Organization> organizations = organizationDao.queryAll(param);
 		if (!CollectionUtils.isEmpty(organizations)) {
@@ -76,6 +88,18 @@ public class TreeServiceImpl implements ITreeService {
 				}
 			}
 			
+			//查找已分配的机构
+			Map<String, String> organizationMap = new HashMap<String, String>(1);
+			String roleId = param.getRoleId();
+			if (!StringUtils.isEmpty(roleId)) {
+				RoleOrganizationQueryParam queryParam = new RoleOrganizationQueryParam();
+				queryParam.setRoleId(roleId);
+				List<RoleOrganization> roleOrganizations = roleOrganizationDao.queryAll(queryParam);
+				for (RoleOrganization roleOrganization : roleOrganizations) {
+					organizationMap.put(roleOrganization.getOrganizationId(), roleOrganization.getOrganizationId());
+				}
+			}
+			
 			//初始化tree
 			for (Organization organization : organizations) {
 				tree = new Tree();
@@ -83,6 +107,12 @@ public class TreeServiceImpl implements ITreeService {
 				tree.setText(organization.getName());
 				tree.setState(StateEnum.OPEN.name().toLowerCase());
 				tree.setParentId(organization.getParentId());
+				if (!StringUtils.isEmpty(roleId)) {
+					String permissionId = organizationMap.get(organization.getId());
+					if (!StringUtils.isEmpty(permissionId)) {
+						tree.setChecked(true);
+					}
+				}
 				Map<String, String> attributes = new HashMap<String, String>(1);
 				attributes.put("code", organization.getCode());
 				attributes.put("createTime", DateUtil.getDateTime(organization.getCreateTime()));
@@ -128,6 +158,18 @@ public class TreeServiceImpl implements ITreeService {
 			Map<String, Tree> treeMap = new HashMap<String, Tree>();
 			Tree tree = null;
 			
+			//查找已分配的权限
+			Map<String, String> permissionMap = new HashMap<String, String>(1);
+			String roleId = param.getRoleId();
+			if (!StringUtils.isEmpty(roleId)) {
+				RolePermissionQueryParam queryParam = new RolePermissionQueryParam();
+				queryParam.setRoleId(roleId);
+				List<RolePermission> rolePermissions = rolePermissionDao.queryAll(queryParam);
+				for (RolePermission rolePermission : rolePermissions) {
+					permissionMap.put(rolePermission.getPermissionId(), rolePermission.getPermissionId());
+				}
+			}
+			
 			//初始化tree
 			for (Permission permission : permissions) {
 				tree = new Tree();
@@ -135,6 +177,13 @@ public class TreeServiceImpl implements ITreeService {
 				tree.setText(permission.getName());
 				tree.setState(StateEnum.OPEN.name().toLowerCase());
 				tree.setParentId(permission.getParentId());
+				if (!StringUtils.isEmpty(roleId)) {
+					String permissionId = permissionMap.get(permission.getId());
+					if (!StringUtils.isEmpty(permissionId)) {
+						tree.setChecked(true);
+					}
+				}
+				
 				Map<String, String> attributes = new HashMap<String, String>(1);
 				attributes.put("url", permission.getUrl());
 				attributes.put("createTime", DateUtil.getDateTime(permission.getCreateTime()));

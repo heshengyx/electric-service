@@ -69,5 +69,10 @@ public interface IPermissionMapper {
      * @return
      */
     List<Permission> queryAll(@Param("param") PermissionQueryParam param);
+    
+    /**
+     * 查找用户权限
+     */
+    List<Permission> queryPermissions(@Param("param") PermissionQueryParam param);
 }
 

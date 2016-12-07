@@ -9,68 +9,68 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.grgbanking.electric.dao.IRoleDao;
-import com.grgbanking.electric.data.RoleData;
-import com.grgbanking.electric.entity.Role;
+import com.grgbanking.electric.dao.ICurveDao;
+import com.grgbanking.electric.data.CurveData;
+import com.grgbanking.electric.entity.Curve;
 import com.grgbanking.electric.page.IPage;
 import com.grgbanking.electric.page.IPagination;
 import com.grgbanking.electric.page.Pager;
-import com.grgbanking.electric.param.RoleQueryParam;
-import com.grgbanking.electric.service.IRoleService;
+import com.grgbanking.electric.param.CurveQueryParam;
+import com.grgbanking.electric.service.ICurveService;
 import com.grgbanking.electric.util.UUIDGeneratorUtil;
 
 
-@Service("roleService")
-public class RoleServiceImpl implements IRoleService {
+@Service("curveService")
+public class CurveServiceImpl implements ICurveService {
 
     @Autowired
-    private IRoleDao roleDao;
+    private ICurveDao curveDao;
     
     @Override
-    public void save(Role role) {
-        String name = role.getName();
-if (StringUtils.isEmpty(name)) {
-throw new DataAccessResourceFailureException("监测点编号不能为空");
+    public void save(Curve curve) {
+        Date sampleTime = curve.getSampleTime();
+if (null != sampleTime) {
+throw new DataAccessResourceFailureException("采样时间不能为空");
 }
 
-        role.setId(UUIDGeneratorUtil.getUUID());
-        role.setCreateTime(new Date());
+        curve.setId(UUIDGeneratorUtil.getUUID());
+        curve.setCreateTime(new Date());
         
-        int count = roleDao.save(role);
+        int count = curveDao.save(curve);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据保存失败");
         }
     }
 
     @Override
-    public void saveBatch(List<Role> roles) {
-        Role role = null;
-        for (int i = 0; i < roles.size(); i++) {
-            role = roles.get(i);
-            role.setId(UUIDGeneratorUtil.getUUID());
-            role.setCreateTime(new Date());
-            roles.set(i, role);
+    public void saveBatch(List<Curve> curves) {
+        Curve curve = null;
+        for (int i = 0; i < curves.size(); i++) {
+            curve = curves.get(i);
+            curve.setId(UUIDGeneratorUtil.getUUID());
+            curve.setCreateTime(new Date());
+            curves.set(i, curve);
         }
-        int count = roleDao.saveBatch(roles);
+        int count = curveDao.saveBatch(curves);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据保存失败");
         }
     }
     
     @Override
-    public void saveBatchData(RoleData data) {
+    public void saveBatchData(CurveData data) {
                 //
     }
     
     @Override
-    public void update(Role role) {
-        String name = role.getName();
-if (StringUtils.isEmpty(name)) {
-throw new DataAccessResourceFailureException("监测点编号不能为空");
+    public void update(Curve curve) {
+        Date sampleTime = curve.getSampleTime();
+if (null != sampleTime) {
+throw new DataAccessResourceFailureException("采样时间不能为空");
 }
 
-        role.setUpdateTime(new Date());
-        int count = roleDao.update(role);
+        curve.setUpdateTime(new Date());
+        int count = curveDao.update(curve);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据修改失败");
         }
@@ -79,7 +79,7 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     @Override
     public void deleteById(String id) {
         if (!StringUtils.isEmpty(id)) {
-            int count = roleDao.deleteById(id);
+            int count = curveDao.deleteById(id);
             if (count == 0) {
                 throw new DataAccessResourceFailureException("数据删除失败");
             }
@@ -91,7 +91,7 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     @Override
     public void deleteByIds(List<String> ids) {
         if (!CollectionUtils.isEmpty(ids)) {
-            int count = roleDao.deleteByIds(ids);
+            int count = curveDao.deleteByIds(ids);
             if (count == 0) {
                 throw new DataAccessResourceFailureException("数据删除失败");
             }
@@ -101,52 +101,52 @@ throw new DataAccessResourceFailureException("监测点编号不能为空");
     }
 
     @Override
-    public void delete(Role role) {
-        int count = roleDao.delete(role);
+    public void delete(Curve curve) {
+        int count = curveDao.delete(curve);
         if (count == 0) {
             throw new DataAccessResourceFailureException("数据删除失败");
         }
     }
 
     @Override
-    public Role getById(String id) {
-        return roleDao.getById(id);
+    public Curve getById(String id) {
+        return curveDao.getById(id);
     }
 
     @Override
-    public Role getData(Role role) {
-        return roleDao.getData(role);
+    public Curve getData(Curve curve) {
+        return curveDao.getData(curve);
     }
     
     @Override
-    public void saveOrUpdate(Role role) {
-        if (StringUtils.isEmpty(role.getId())) {
-            save(role);
+    public void saveOrUpdate(Curve curve) {
+        if (StringUtils.isEmpty(curve.getId())) {
+            save(curve);
         } else {
-            update(role);
+            update(curve);
         }
     }
 
     @Override
-    public IPage<Role> query(final RoleQueryParam param) {
+    public IPage<Curve> query(final CurveQueryParam param) {
         int page = param.getPage() <= 0 ? 1 : param.getPage();
         int rows = param.getRows() <= 0 ? 10 : param.getRows();
-        return Pager.execute(new IPagination<Role>() {
+        return Pager.execute(new IPagination<Curve>() {
 
             @Override
             public int count() {
-                return roleDao.count(param);
+                return curveDao.count(param);
             }
 
             @Override
-            public List<Role> query(int start, int end) {
-                return roleDao.query(param, start, end);
+            public List<Curve> query(int start, int end) {
+                return curveDao.query(param, start, end);
             }
         }, page, rows);
     }
     
     @Override
-	public List<Role> queryAll(RoleQueryParam param) {
-		return roleDao.queryAll(param);
+	public List<Curve> queryAll(CurveQueryParam param) {
+		return curveDao.queryAll(param);
 	}
 }

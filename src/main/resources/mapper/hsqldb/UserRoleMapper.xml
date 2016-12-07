@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.grgbanking.electric.mapper.IPermissionMapper">
-	<resultMap type="com.grgbanking.electric.entity.Permission" id="permission">
+<mapper namespace="com.grgbanking.electric.mapper.IUserRoleMapper">
+	<resultMap type="com.grgbanking.electric.entity.UserRole" id="userRole">
 		<id column="ID" property="id" jdbcType="VARCHAR" />
-		<result column="NAME" property="name" jdbcType="VARCHAR" />
-		<result column="URL" property="url" jdbcType="VARCHAR" />
-		<result column="PARENT_ID" property="parentId" jdbcType="VARCHAR" />
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -15,7 +15,7 @@
 	</resultMap>
 
 	<sql id="sqlQuery">
-		FROM PERMISSION a where 1=1
+		FROM USER_ROLE a where 1=1
 		
 		<if test="param.createDateBegin != null and param.createDateBegin != ''">
             AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
@@ -26,49 +26,43 @@
 	</sql>
 	
 	<!-- 根据ID查找 -->
-	<select id="getById" resultMap="permission">
-    	SELECT * FROM PERMISSION WHERE ID = #{id, jdbcType=VARCHAR}
+	<select id="getById" resultMap="userRole">
+    	SELECT * FROM USER_ROLE WHERE ID = #{id, jdbcType=VARCHAR}
   	</select>
   	
   	<!-- 多条件查找 -->
-  	<select id="getData" resultMap="permission">
-    	SELECT * FROM PERMISSION WHERE ID = #{param.id, jdbcType=VARCHAR}
+  	<select id="getData" resultMap="userRole">
+    	SELECT * FROM USER_ROLE WHERE ID = #{param.id, jdbcType=VARCHAR}
   	</select>
   	
   	<select id="count" resultType="java.lang.Integer">
 		SELECT COUNT(1) <include refid="sqlQuery"/>
 	</select>
-	<select id="query" resultMap="permission">
+	<select id="query" resultMap="userRole">
 		SELECT a.* <include refid="sqlQuery"/>
 			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
 	</select>
-	<select id="queryAll" resultMap="permission">
-		SELECT a.* FROM PERMISSION a
+	<select id="queryAll" resultMap="userRole">
+		SELECT a.* FROM USER_ROLE a
 			order by a.CREATE_TIME desc
-	</select>
-	<select id="queryPermissions" resultMap="permission">
-		SELECT distinct a.* FROM PERMISSION a 
-			join ROLE_PERMISSION b on a.id = b.PERMISSION_ID 
-			join USER_ROLE c on b.ROLE_ID = c.ROLE_ID
-			where c.USER_ID = #{param.userId, jdbcType=VARCHAR}
 	</select>
   	
   	<!-- 新增 -->
   	<insert id="save" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO PERMISSION
+		INSERT INTO USER_ROLE
 		  (ID,
-		   	NAME,
-			URL,
-			PARENT_ID,
+		   USER_ID,
+ROLE_ID,
+
 		   	VERSION,
 		   	CREATE_TIME,
 		   	CREATE_BY,
 		   	REMARKS)
 		VALUES
 		  (#{param.id, jdbcType=VARCHAR},
-		   	#{param.name, jdbcType=VARCHAR},
-			#{param.url, jdbcType=VARCHAR},
-			#{param.parentId, jdbcType=VARCHAR},
+		   #{param.userId, jdbcType=VARCHAR},
+#{param.roleId, jdbcType=VARCHAR},
+
 		   	#{param.version, jdbcType=INTEGER},
 		   	#{param.createTime, jdbcType=TIMESTAMP},
 		   	#{param.createBy, jdbcType=VARCHAR},
@@ -77,11 +71,11 @@
 	
 	<!-- 批量新增 -->
 	<insert id="saveBatch">
-		INSERT INTO PERMISSION
+		INSERT INTO USER_ROLE
 		  (ID,
-		   	NAME,
-			URL,
-			PARENT_ID,
+		   USER_ID,
+ROLE_ID,
+
 		   	VERSION,
 		   	CREATE_TIME,
 		   	CREATE_BY,
@@ -89,9 +83,9 @@
 		VALUES
 		<foreach collection="list" item="param" index="index" separator="," >
 		  (#{param.id, jdbcType=VARCHAR},
-		   	#{param.name, jdbcType=VARCHAR},
-			#{param.url, jdbcType=VARCHAR},
-			#{param.parentId, jdbcType=VARCHAR},
+		   #{param.userId, jdbcType=VARCHAR},
+#{param.roleId, jdbcType=VARCHAR},
+
 		   	#{param.version, jdbcType=INTEGER},
 		   	#{param.createTime, jdbcType=TIMESTAMP},
 		   	#{param.createBy, jdbcType=VARCHAR},
@@ -100,17 +94,15 @@
 	</insert>
 	
 	<update id="update">
-		UPDATE PERMISSION a
+		UPDATE USER_ROLE a
 		<set>
-		<if test="param.name != null and param.name != ''">
-		 a.NAME = #{param.name, jdbcType=VARCHAR},
-		</if>
-		<if test="param.url != null and param.url != ''">
-		 a.URL = #{param.url, jdbcType=VARCHAR},
-		</if>
-		<if test="param.parentId != null and param.parentId != ''">
-		 a.PARENT_ID = #{param.parentId, jdbcType=VARCHAR},
-		</if>
+		<if test="param.userId != null and param.userId != ''">
+ a.USER_ID = #{param.userId, jdbcType=VARCHAR},
+</if>
+<if test="param.roleId != null and param.roleId != ''">
+ a.ROLE_ID = #{param.roleId, jdbcType=VARCHAR},
+</if>
+
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
 		</set>
@@ -119,17 +111,17 @@
 	
 	<!-- 根据ID删除-->
 	<delete id="deleteById">
-		delete from PERMISSION a where a.ID = #{id, jdbcType=VARCHAR}
+		delete from USER_ROLE a where a.ID = #{id, jdbcType=VARCHAR}
 	</delete>
 	
 	<!-- 多条件删除 -->
 	<delete id="delete">
-		delete from PERMISSION a where a.ID = #{param.id, jdbcType=VARCHAR}
+		delete from USER_ROLE a where a.ID = #{param.id, jdbcType=VARCHAR}
 	</delete>
 	
 	<!-- 根据ID批量删除-->
 	<delete id="deleteByIds">
-		delete from PERMISSION a where a.ID in (
+		delete from USER_ROLE a where a.ID in (
 		<foreach collection="ids" item="id" index="index" separator="," >
 		  #{id, jdbcType=VARCHAR}
 		</foreach>)

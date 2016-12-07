@@ -14,7 +14,7 @@ public class UserJunitTest extends BaseJunitTest {
 	@Test
 	public void testGetUserByAccount() {
 		User user = userService.getUserByAccount("admin");
-		System.out.println(user.getName());
+		System.out.println(user.getId());
 	}
 	
 	@Test

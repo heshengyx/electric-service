@@ -10,6 +10,14 @@
 		<property name="service" ref="userService" />  
 		<property name="serviceInterface" value="com.grgbanking.electric.service.IUserService" />  
 	</bean>
+	<bean name="/permissionService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="permissionService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IPermissionService" />
+    </bean>
+    <bean name="/roleService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="roleService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IRoleService" />
+    </bean>
 	<bean name="/organizationService" class="org.springframework.remoting.caucho.HessianServiceExporter"> 
 		<property name="service" ref="organizationService" />  
 		<property name="serviceInterface" value="com.grgbanking.electric.service.IOrganizationService" />  
@@ -29,6 +37,34 @@
     <bean name="/instantaneousService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service" ref="instantaneousService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.IInstantaneousService" />
+    </bean>
+    <bean name="/curveService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="curveService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.ICurveService" />
+    </bean>
+    <bean name="/freezeDayService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="freezeDayService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IFreezeDayService" />
+    </bean>
+    <bean name="/freezeMonthService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="freezeMonthService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IFreezeMonthService" />
+    </bean>
+    <bean name="/eventService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="eventService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IEventService" />
+    </bean>
+    <bean name="/rolePermissionService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="rolePermissionService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IRolePermissionService" />
+    </bean>
+    <bean name="/roleOrganizationService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="roleOrganizationService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IRoleOrganizationService" />
+    </bean>
+    <bean name="/userRoleService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="userRoleService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IUserRoleService" />
     </bean>
     <!-- hessian-servlet-conf -->
 </beans>

@@ -72,4 +72,9 @@ public class PermissionDaoImpl implements IPermissionDao {
     public List<Permission> queryAll(PermissionQueryParam param) {
         return permissionMapper.queryAll(param);
     }
+
+	@Override
+	public List<Permission> queryPermissions(PermissionQueryParam param) {
+		return permissionMapper.queryPermissions(param);
+	}
 }
