@@ -10,7 +10,7 @@
 		<result column="PHONE" property="phone" jdbcType="VARCHAR" />
 		<result column="ACCOUNT" property="account" jdbcType="VARCHAR" />
 		<result column="PASSWORD" property="password" jdbcType="VARCHAR" />
-		<result column="ORGID" property="orgId" jdbcType="VARCHAR" />
+		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -63,7 +63,7 @@
 			PHONE,
 			ACCOUNT,
 			PASSWORD,
-			ORGID,
+			ORG_ID,
 		    VERSION,
 		    CREATE_TIME,
 		    CREATE_BY,
@@ -95,7 +95,7 @@
 			PHONE,
 			ACCOUNT,
 			PASSWORD,
-			ORGID,
+			ORG_ID,
 		    VERSION,
 		    CREATE_TIME,
 		    CREATE_BY,
@@ -143,7 +143,7 @@
 		 a.PASSWORD = #{param.password, jdbcType=VARCHAR},
 		</if>
 		<if test="param.orgId != null and param.orgId != ''">
-		 a.ORGID = #{param.orgId, jdbcType=VARCHAR},
+		 a.ORG_ID = #{param.orgId, jdbcType=VARCHAR},
 		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
