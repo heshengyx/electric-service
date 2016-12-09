@@ -75,4 +75,11 @@ public interface IRoleOrganizationDao {
      * @return
      */
     List<RoleOrganization> queryAll(RoleOrganizationQueryParam param);
+    
+    /**
+     * 根据用户ID查找机构ID
+     * @param userId
+     * @return
+     */
+    List<RoleOrganization> queryByUserId(String userId);
 }

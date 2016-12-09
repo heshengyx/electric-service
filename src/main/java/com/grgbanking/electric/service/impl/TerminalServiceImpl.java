@@ -201,4 +201,9 @@ public class TerminalServiceImpl implements ITerminalService {
 	public List<Terminal> queryAll(TerminalQueryParam param) {
 		return terminalDao.queryAll(param);
 	}
+
+	@Override
+	public List<Terminal> queryByUserId(String userId) {
+		return terminalDao.queryByUserId(userId);
+	}
 }

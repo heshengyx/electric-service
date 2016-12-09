@@ -88,4 +88,9 @@ public class TerminalDaoImpl implements ITerminalDao {
     public List<Terminal> queryAll(TerminalQueryParam param) {
         return terminalMapper.queryAll(param);
     }
+
+	@Override
+	public List<Terminal> queryByUserId(String userId) {
+		return terminalMapper.queryByUserId(userId);
+	}
 }

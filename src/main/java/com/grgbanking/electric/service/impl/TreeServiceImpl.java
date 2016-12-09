@@ -62,7 +62,22 @@ public class TreeServiceImpl implements ITreeService {
 	
 	@Override
 	public List<Tree> treeOrganization(OrganizationQueryParam param) {
-		List<Tree> trees = null; 
+		if (!"1".equals(param.getAdmin())) {
+			//非管理员
+			List<String> ids = null;
+			//查找用户分配的机构
+			List<RoleOrganization> roleOrganizationList = roleOrganizationDao.queryByUserId(param.getUserId());
+			if (!CollectionUtils.isEmpty(roleOrganizationList)) {
+				ids = new ArrayList<String>(roleOrganizationList.size());
+				for (RoleOrganization roleOrganization : roleOrganizationList) {
+					ids.add(roleOrganization.getOrganizationId());
+				}
+			}
+			param.setIds(ids);
+		}
+		
+		List<Tree> trees = null;
+		//查找全部机构
 		List<Organization> organizations = organizationDao.queryAll(param);
 		if (!CollectionUtils.isEmpty(organizations)) {
 			Map<String, Tree> treeMap = new HashMap<String, Tree>();

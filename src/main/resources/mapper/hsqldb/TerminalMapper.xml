@@ -120,6 +120,13 @@
 		</if>
 			order by a.CREATE_TIME desc
 	</select>
+	<select id="queryByUserId" resultMap="terminal">
+		SELECT distinct a.*
+		  	FROM TERMINAL a
+		  	join ROLE_ORGANIZATION b on a.ORG_ID = b.ORGANIZATION_ID
+		  	JOIN USER_ROLE c ON b.ROLE_ID = c.ROLE_ID
+		 WHERE c.USER_ID = #{userId, jdbcType=VARCHAR}
+	</select>
   	
   	<!-- 新增 -->
   	<insert id="save" useGeneratedKeys="true" keyProperty="id">

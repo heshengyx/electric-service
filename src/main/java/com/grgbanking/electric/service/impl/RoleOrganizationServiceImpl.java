@@ -149,4 +149,9 @@ throw new DataAccessResourceFailureException("采样时间不能为空");
 	public List<RoleOrganization> queryAll(RoleOrganizationQueryParam param) {
 		return roleOrganizationDao.queryAll(param);
 	}
+
+	@Override
+	public List<RoleOrganization> queryByUserId(String userId) {
+		return roleOrganizationDao.queryByUserId(userId);
+	}
 }

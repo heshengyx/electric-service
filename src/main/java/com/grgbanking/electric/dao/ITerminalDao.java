@@ -93,4 +93,11 @@ public interface ITerminalDao {
      * @return
      */
     List<Terminal> queryAll(TerminalQueryParam param);
+    
+    /**
+     * 根据用户Id查找终端
+     * @param userId
+     * @return
+     */
+    List<Terminal> queryByUserId(String userId);
 }

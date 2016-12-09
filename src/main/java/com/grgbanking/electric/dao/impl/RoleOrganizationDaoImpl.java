@@ -72,4 +72,9 @@ public class RoleOrganizationDaoImpl implements IRoleOrganizationDao {
     public List<RoleOrganization> queryAll(RoleOrganizationQueryParam param) {
         return roleOrganizationMapper.queryAll(param);
     }
+
+	@Override
+	public List<RoleOrganization> queryByUserId(String userId) {
+		return roleOrganizationMapper.queryByUserId(userId);
+	}
 }

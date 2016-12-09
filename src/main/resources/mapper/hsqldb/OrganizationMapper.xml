@@ -67,6 +67,12 @@
 	        <if test="param.createDateEnd != null and param.createDateEnd != ''">
 	            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
 	        </if>
+	        <if test="param.ids != null and param.ids.size != 0">
+	            AND a.ID in (
+				<foreach collection="param.ids" item="id" index="index" separator="," >
+				  #{id, jdbcType=VARCHAR}
+				</foreach>)
+	        </if>
 			order by a.CREATE_TIME desc
 	</select>
   	

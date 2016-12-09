@@ -66,5 +66,9 @@
         <property name="service" ref="userRoleService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.IUserRoleService" />
     </bean>
+    <bean name="/employeeService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="employeeService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IEmployeeService" />
+    </bean>
     <!-- hessian-servlet-conf -->
 </beans>

@@ -69,5 +69,12 @@ public interface IRoleOrganizationMapper {
      * @return
      */
     List<RoleOrganization> queryAll(@Param("param") RoleOrganizationQueryParam param);
+    
+    /**
+     * 根据用户ID查找机构ID
+     * @param userId
+     * @return
+     */
+    List<RoleOrganization> queryByUserId(@Param("userId") String userId);
 }
 

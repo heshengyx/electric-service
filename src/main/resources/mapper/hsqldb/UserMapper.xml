@@ -11,6 +11,7 @@
 		<result column="ACCOUNT" property="account" jdbcType="VARCHAR" />
 		<result column="PASSWORD" property="password" jdbcType="VARCHAR" />
 		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
+		<result column="ADMIN" property="admin" jdbcType="VARCHAR" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -64,6 +65,7 @@
 			ACCOUNT,
 			PASSWORD,
 			ORG_ID,
+			ADMIN,
 		    VERSION,
 		    CREATE_TIME,
 		    CREATE_BY,
@@ -78,6 +80,7 @@
             #{param.account, jdbcType=VARCHAR},
             #{param.password, jdbcType=VARCHAR},
             #{param.orgId, jdbcType=VARCHAR},
+            #{param.admin, jdbcType=VARCHAR},
 		    #{param.version, jdbcType=INTEGER},
 		    #{param.createTime, jdbcType=TIMESTAMP},
 		    #{param.createBy, jdbcType=VARCHAR},
@@ -96,6 +99,7 @@
 			ACCOUNT,
 			PASSWORD,
 			ORG_ID,
+			ADMIN,
 		    VERSION,
 		    CREATE_TIME,
 		    CREATE_BY,
@@ -111,6 +115,7 @@
 			#{param.account, jdbcType=VARCHAR},
 			#{param.password, jdbcType=VARCHAR},
 			#{param.orgId, jdbcType=VARCHAR},
+			#{param.admin, jdbcType=VARCHAR},
 		    #{param.version, jdbcType=INTEGER},
 		    #{param.createTime, jdbcType=TIMESTAMP},
 		    #{param.createBy, jdbcType=VARCHAR},
@@ -144,6 +149,9 @@
 		</if>
 		<if test="param.orgId != null and param.orgId != ''">
 		 a.ORG_ID = #{param.orgId, jdbcType=VARCHAR},
+		</if>
+		<if test="param.admin != null and param.admin != ''">
+		 a.ADMIN = #{param.admin, jdbcType=VARCHAR},
 		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}

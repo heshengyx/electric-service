@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.grgbanking.electric.mapper.IRoleOrganizationMapper">
-	<resultMap type="com.grgbanking.electric.entity.RoleOrganization" id="roleOrganization">
+<mapper namespace="com.grgbanking.electric.mapper.IEmployeeMapper">
+	<resultMap type="com.grgbanking.electric.entity.Employee" id="employee">
 		<id column="ID" property="id" jdbcType="VARCHAR" />
-		<result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
-		<result column="ORGANIZATION_ID" property="organizationId" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="CODE" property="code" jdbcType="VARCHAR" />
+		<result column="SEX" property="sex" jdbcType="INTEGER" />
+		<result column="AGE" property="age" jdbcType="INTEGER" />
+		<result column="IDCARD" property="idcard" jdbcType="VARCHAR" />
+		<result column="BIRTH_DATE" property="birthDate" jdbcType="TIMESTAMP" />
+		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -14,7 +19,7 @@
 	</resultMap>
 
 	<sql id="sqlQuery">
-		FROM ROLE_ORGANIZATION a where 1=1
+		FROM EMPLOYEE a where 1=1
 		
 		<if test="param.createDateBegin != null and param.createDateBegin != ''">
             AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
@@ -25,48 +30,51 @@
 	</sql>
 	
 	<!-- 根据ID查找 -->
-	<select id="getById" resultMap="roleOrganization">
-    	SELECT * FROM ROLE_ORGANIZATION WHERE ID = #{id, jdbcType=VARCHAR}
+	<select id="getById" resultMap="employee">
+    	SELECT * FROM EMPLOYEE WHERE ID = #{id, jdbcType=VARCHAR}
   	</select>
   	
   	<!-- 多条件查找 -->
-  	<select id="getData" resultMap="roleOrganization">
-    	SELECT * FROM ROLE_ORGANIZATION WHERE ID = #{param.id, jdbcType=VARCHAR}
+  	<select id="getData" resultMap="employee">
+    	SELECT * FROM EMPLOYEE WHERE ID = #{param.id, jdbcType=VARCHAR}
   	</select>
   	
   	<select id="count" resultType="java.lang.Integer">
 		SELECT COUNT(1) <include refid="sqlQuery"/>
 	</select>
-	<select id="query" resultMap="roleOrganization">
+	<select id="query" resultMap="employee">
 		SELECT a.* <include refid="sqlQuery"/>
 			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
 	</select>
-	<select id="queryAll" resultMap="roleOrganization">
-		SELECT a.* FROM ROLE_ORGANIZATION a
-			where a.ROLE_ID = #{param.roleId, jdbcType=VARCHAR}
+	<select id="queryAll" resultMap="employee">
+		SELECT a.* FROM EMPLOYEE a
 			order by a.CREATE_TIME desc
-	</select>
-	<select id="queryByUserId" resultMap="roleOrganization">
-		SELECT distinct a.*
-		  	FROM ROLE_ORGANIZATION a
-		  	JOIN USER_ROLE b ON a.ROLE_ID = b.ROLE_ID
-		 WHERE b.USER_ID = #{userId, jdbcType=VARCHAR}
 	</select>
   	
   	<!-- 新增 -->
   	<insert id="save" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO ROLE_ORGANIZATION
+		INSERT INTO EMPLOYEE
 		  (ID,
-		   	ROLE_ID,
-			ORGANIZATION_ID,
+		   	NAME,
+			CODE,
+			SEX,
+			AGE,
+			IDCARD,
+			BIRTH_DATE,
+			ORG_ID,
 		   	VERSION,
 		   	CREATE_TIME,
 		   	CREATE_BY,
 		   	REMARKS)
 		VALUES
 		  (#{param.id, jdbcType=VARCHAR},
-		   	#{param.roleId, jdbcType=VARCHAR},
-			#{param.organizationId, jdbcType=VARCHAR},
+		   	#{param.name, jdbcType=VARCHAR},
+			#{param.code, jdbcType=VARCHAR},
+			#{param.sex, jdbcType=INTEGER},
+			#{param.age, jdbcType=INTEGER},
+			#{param.idcard, jdbcType=VARCHAR},
+			#{param.birthDate, jdbcType=TIMESTAMP},
+			#{param.orgId, jdbcType=VARCHAR},
 		   	#{param.version, jdbcType=INTEGER},
 		   	#{param.createTime, jdbcType=TIMESTAMP},
 		   	#{param.createBy, jdbcType=VARCHAR},
@@ -75,10 +83,15 @@
 	
 	<!-- 批量新增 -->
 	<insert id="saveBatch">
-		INSERT INTO ROLE_ORGANIZATION
+		INSERT INTO EMPLOYEE
 		  (ID,
-		   	ROLE_ID,
-			ORGANIZATION_ID,
+		   	NAME,
+			CODE,
+			SEX,
+			AGE,
+			IDCARD,
+			BIRTH_DATE,
+			ORG_ID,
 		   	VERSION,
 		   	CREATE_TIME,
 		   	CREATE_BY,
@@ -86,8 +99,13 @@
 		VALUES
 		<foreach collection="list" item="param" index="index" separator="," >
 		  (#{param.id, jdbcType=VARCHAR},
-		   	#{param.roleId, jdbcType=VARCHAR},
-			#{param.organizationId, jdbcType=VARCHAR},
+		   	#{param.name, jdbcType=VARCHAR},
+			#{param.code, jdbcType=VARCHAR},
+			#{param.sex, jdbcType=INTEGER},
+			#{param.age, jdbcType=INTEGER},
+			#{param.idcard, jdbcType=VARCHAR},
+			#{param.birthDate, jdbcType=TIMESTAMP},
+			#{param.orgId, jdbcType=VARCHAR},
 		   	#{param.version, jdbcType=INTEGER},
 		   	#{param.createTime, jdbcType=TIMESTAMP},
 		   	#{param.createBy, jdbcType=VARCHAR},
@@ -96,13 +114,28 @@
 	</insert>
 	
 	<update id="update">
-		UPDATE ROLE_ORGANIZATION a
+		UPDATE EMPLOYEE a
 		<set>
-		<if test="param.roleId != null and param.roleId != ''">
-		 a.ROLE_ID = #{param.roleId, jdbcType=VARCHAR},
+		<if test="param.name != null and param.name != ''">
+		 a.NAME = #{param.name, jdbcType=VARCHAR},
 		</if>
-		<if test="param.organizationId != null and param.organizationId != ''">
-		 a.ORGANIZATION_ID = #{param.organizationId, jdbcType=VARCHAR},
+		<if test="param.code != null and param.code != ''">
+		 a.CODE = #{param.code, jdbcType=VARCHAR},
+		</if>
+		<if test="param.sex != null and param.sex != ''">
+		 a.SEX = #{param.sex, jdbcType=INTEGER},
+		</if>
+		<if test="param.age != null and param.age != ''">
+		 a.AGE = #{param.age, jdbcType=INTEGER},
+		</if>
+		<if test="param.idcard != null and param.idcard != ''">
+		 a.IDCARD = #{param.idcard, jdbcType=VARCHAR},
+		</if>
+		<if test="param.birthDate != null and param.birthDate != ''">
+		 a.BIRTH_DATE = #{param.birthDate, jdbcType=TIMESTAMP},
+		</if>
+		<if test="param.orgId != null and param.orgId != ''">
+		 a.ORG_ID = #{param.orgId, jdbcType=VARCHAR},
 		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
@@ -112,17 +145,17 @@
 	
 	<!-- 根据ID删除-->
 	<delete id="deleteById">
-		delete from ROLE_ORGANIZATION a where a.ID = #{id, jdbcType=VARCHAR}
+		delete from EMPLOYEE a where a.ID = #{id, jdbcType=VARCHAR}
 	</delete>
 	
 	<!-- 多条件删除 -->
 	<delete id="delete">
-		delete from ROLE_ORGANIZATION a where a.ROLE_ID = #{param.roleId, jdbcType=VARCHAR}
+		delete from EMPLOYEE a where a.ID = #{param.id, jdbcType=VARCHAR}
 	</delete>
 	
 	<!-- 根据ID批量删除-->
 	<delete id="deleteByIds">
-		delete from ROLE_ORGANIZATION a where a.ID in (
+		delete from EMPLOYEE a where a.ID in (
 		<foreach collection="ids" item="id" index="index" separator="," >
 		  #{id, jdbcType=VARCHAR}
 		</foreach>)

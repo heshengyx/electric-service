@@ -81,5 +81,12 @@ public interface ITerminalMapper {
      * @return
      */
     List<Terminal> queryAll(@Param("param") TerminalQueryParam param);
+    
+    /**
+     * 根据用户Id查找终端
+     * @param userId
+     * @return
+     */
+    List<Terminal> queryByUserId(@Param("userId") String userId);
 }
 
