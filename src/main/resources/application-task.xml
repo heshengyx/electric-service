@@ -5,7 +5,7 @@
 	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
 	<task:scheduled-tasks>
-		<task:scheduled ref="vipServiceTask" method="job"
+		<task:scheduled ref="heartbeatTask" method="job"
 			cron="0 0/2 * * * ?" />
 	</task:scheduled-tasks>
 </beans>

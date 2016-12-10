@@ -36,6 +36,14 @@ public interface ITerminalMapper {
     int updateByIds(@Param("param") Terminal terminal, @Param("ids") List<String> ids);
     
     /**
+     * 批量修改超时断线状态
+     * @param terminal
+     * @param timeout
+     * @return
+     */
+    int updateByTimeout(@Param("param") Terminal terminal, @Param("timeout") int timeout);
+    
+    /**
      * 根据ID删除
      * @param id
      */
@@ -88,5 +96,12 @@ public interface ITerminalMapper {
      * @return
      */
     List<Terminal> queryByUserId(@Param("userId") String userId);
+    
+    /**
+     * 查找超时断线终端
+     * @param userId
+     * @return
+     */
+    List<Terminal> queryTimeout(@Param("timeout") int timeout);
 }
 

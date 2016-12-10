@@ -93,4 +93,14 @@ public class TerminalDaoImpl implements ITerminalDao {
 	public List<Terminal> queryByUserId(String userId) {
 		return terminalMapper.queryByUserId(userId);
 	}
+
+	@Override
+	public List<Terminal> queryTimeout(int timeout) {
+		return terminalMapper.queryTimeout(timeout);
+	}
+
+	@Override
+	public int updateByTimeout(Terminal terminal, int timeout) {
+		return terminalMapper.updateByTimeout(terminal, timeout);
+	}
 }

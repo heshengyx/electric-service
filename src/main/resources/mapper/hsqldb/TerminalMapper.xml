@@ -7,6 +7,9 @@
 		<result column="CODE" property="code" jdbcType="VARCHAR" />
 		<result column="ORG_ID" property="orgId" jdbcType="VARCHAR" />
 		<result column="STYLE_ID" property="styleId" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
+		<result column="HEARTBEAT" property="heartbeat" jdbcType="TIMESTAMP" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -21,6 +24,9 @@
 		<result column="CODE" property="code" jdbcType="VARCHAR" />
 		<result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
 		<result column="STYLE_NAME" property="styleName" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="VARCHAR" />
+		<result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
+		<result column="HEARTBEAT" property="heartbeat" jdbcType="TIMESTAMP" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
@@ -83,7 +89,8 @@
   	
   	<!-- 多条件查找 -->
   	<select id="getData" resultMap="terminal">
-    	SELECT * FROM TERMINAL WHERE ID = #{param.id, jdbcType=VARCHAR}
+    	SELECT a.* FROM TERMINAL a WHERE 1=1
+    		AND a.CODE = #{param.code}
   	</select>
   	
   	<select id="count" resultType="java.lang.Integer">
@@ -95,7 +102,10 @@
 			a.NAME,
 			a.CODE,
 			c.NAME ORG_NAME,
-			b.NAME STYLE_NAME, 
+			b.NAME STYLE_NAME,
+			a.STATUS,
+			a.IPADDR,
+			a.HEARTBEAT,
 			a.CREATE_TIME
 			<include refid="sqlQuery"/>
 			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
@@ -108,7 +118,11 @@
 			a.ID,
 			a.NAME,
 			a.CODE,
-			b.NAME STYLE_NAME, 
+			c.NAME ORG_NAME,
+			b.NAME STYLE_NAME,
+			a.STATUS,
+			a.IPADDR,
+			a.HEARTBEAT,
 			a.CREATE_TIME
 			<include refid="sqlQueryData"/>
 			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
@@ -127,6 +141,11 @@
 		  	JOIN USER_ROLE c ON b.ROLE_ID = c.ROLE_ID
 		 WHERE c.USER_ID = #{userId, jdbcType=VARCHAR}
 	</select>
+	<select id="queryTimeout" resultMap="terminal">
+		SELECT a.*
+		  	FROM TERMINAL a
+		 WHERE (NOW() - a.HEARTBEAT) is not null and (NOW() - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER}
+	</select>
   	
   	<!-- 新增 -->
   	<insert id="save" useGeneratedKeys="true" keyProperty="id">
@@ -136,6 +155,9 @@
 		   CODE,
 		   ORG_ID,
 		   STYLE_ID,
+		   STATUS,
+		   IPADDR,
+		   HEARTBEAT,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
@@ -146,6 +168,9 @@
 		   #{param.code, jdbcType=VARCHAR},
 		   #{param.orgId, jdbcType=VARCHAR},
 		   #{param.styleId, jdbcType=VARCHAR},
+		   #{param.status, jdbcType=VARCHAR},
+		   #{param.ipaddr, jdbcType=VARCHAR},
+		   #{param.heartbeat, jdbcType=TIMESTAMP},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
 		   #{param.createBy, jdbcType=VARCHAR},
@@ -160,6 +185,8 @@
 		   CODE,
            ORG_ID,
            STYLE_ID,
+           STATUS,
+		   IPADDR,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
@@ -171,6 +198,8 @@
 		   #{param.code, jdbcType=VARCHAR},
 		   #{param.orgId, jdbcType=VARCHAR},
            #{param.styleId, jdbcType=VARCHAR},
+           #{param.status, jdbcType=VARCHAR},
+		   #{param.ipaddr, jdbcType=VARCHAR},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
 		   #{param.createBy, jdbcType=VARCHAR},
@@ -193,6 +222,15 @@
 		<if test="param.styleId != null and param.styleId != ''">
 		 	a.STYLE_ID = #{param.styleId, jdbcType=VARCHAR},
 		</if>
+		<if test="param.status != null and param.status != ''">
+		 	a.STATUS = #{param.status, jdbcType=VARCHAR},
+		</if>
+		<if test="param.ipaddr != null and param.ipaddr != ''">
+		 	a.IPADDR = #{param.ipaddr, jdbcType=VARCHAR},
+		</if>
+		<if test="param.heartbeat != null">
+		 	a.HEARTBEAT = #{param.heartbeat, jdbcType=TIMESTAMP},
+		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
 		</set>
@@ -207,6 +245,14 @@
 		<foreach collection="ids" item="id" index="index" separator="," >
 		  #{id, jdbcType=VARCHAR}
 		</foreach>)
+	</update>
+	<update id="updateByTimeout">
+		UPDATE TERMINAL a SET
+			a.STATUS = #{param.status, jdbcType=VARCHAR}
+		WHERE a.ID in (
+			SELECT a.ID
+			  	FROM TERMINAL a
+			 WHERE (NOW() - a.HEARTBEAT) is not null and (NOW() - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER})
 	</update>
 	
 	<!-- 根据ID删除-->

@@ -13,7 +13,8 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-			classpath*:application-web.xml
+			classpath*:application-web.xml,
+			classpath*:application-task.xml
 		</param-value>
 	</context-param>
 	<context-param>
