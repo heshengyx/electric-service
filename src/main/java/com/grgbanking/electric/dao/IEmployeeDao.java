@@ -2,6 +2,7 @@ package com.grgbanking.electric.dao;
 
 import java.util.List;
 
+import com.grgbanking.electric.data.EmployeeData;
 import com.grgbanking.electric.entity.Employee;
 import com.grgbanking.electric.param.EmployeeQueryParam;
 
@@ -51,6 +52,13 @@ public interface IEmployeeDao {
      * @return
      */
     Employee getById(String id);
+    
+    /**
+     * 根据ID查找
+     * @param id
+     * @return
+     */
+    EmployeeData getDataById(String id);
     
     /**
      * 多条件查找

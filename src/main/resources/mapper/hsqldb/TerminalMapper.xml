@@ -252,7 +252,8 @@
 		WHERE a.ID in (
 			SELECT a.ID
 			  	FROM TERMINAL a
-			 WHERE (NOW() - a.HEARTBEAT) is not null and (NOW() - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER})
+			 WHERE (NOW() - a.HEARTBEAT) is not null and (NOW() - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER}
+			    AND (a.STATUS != '0'))
 	</update>
 	
 	<!-- 根据ID删除-->

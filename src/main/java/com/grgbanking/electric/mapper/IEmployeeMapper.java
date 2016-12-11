@@ -2,6 +2,8 @@ package com.grgbanking.electric.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import com.grgbanking.electric.data.EmployeeData;
 import com.grgbanking.electric.entity.Employee;
 import com.grgbanking.electric.param.EmployeeQueryParam;
 
@@ -51,6 +53,13 @@ public interface IEmployeeMapper {
      * @return
      */
     Employee getById(@Param("id") String id);
+    
+    /**
+     * 根据ID查找
+     * @param id
+     * @return
+     */
+    EmployeeData getDataById(@Param("id") String id);
     
     /**
      * 多条件查找

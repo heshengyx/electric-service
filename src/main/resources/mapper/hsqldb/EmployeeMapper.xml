@@ -17,6 +17,12 @@
 		<result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
 		<result column="REMARKS" property="remarks" jdbcType="VARCHAR" />
 	</resultMap>
+	
+	<resultMap type="com.grgbanking.electric.data.EmployeeData" id="employeeData">
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+        <result column="CODE" property="code" jdbcType="VARCHAR" />
+        <result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
+    </resultMap>
 
 	<sql id="sqlQuery">
 		FROM EMPLOYEE a where 1=1
@@ -36,8 +42,19 @@
   	
   	<!-- 多条件查找 -->
   	<select id="getData" resultMap="employee">
-    	SELECT * FROM EMPLOYEE WHERE ID = #{param.id, jdbcType=VARCHAR}
+    	SELECT a.* FROM EMPLOYEE a WHERE 1=1
+    	   AND a.CODE = #{param.code, jdbcType=VARCHAR}
   	</select>
+  	
+  	<!-- 根据ID查找 -->
+    <select id="getDataById" resultMap="employeeData">
+        SELECT a.NAME,
+               a.CODE,
+               b.NAME ORG_NAME
+            FROM EMPLOYEE a 
+            left join ORGANIZATION b on a.ORG_ID = b.ID
+            WHERE a.ID = #{id, jdbcType=VARCHAR}
+    </select>
   	
   	<select id="count" resultType="java.lang.Integer">
 		SELECT COUNT(1) <include refid="sqlQuery"/>

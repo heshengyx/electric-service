@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.grgbanking.electric.dao.IEmployeeDao;
+import com.grgbanking.electric.data.EmployeeData;
 import com.grgbanking.electric.entity.Employee;
 import com.grgbanking.electric.mapper.IEmployeeMapper;
 import com.grgbanking.electric.param.EmployeeQueryParam;
@@ -72,4 +73,9 @@ public class EmployeeDaoImpl implements IEmployeeDao {
     public List<Employee> queryAll(EmployeeQueryParam param) {
         return employeeMapper.queryAll(param);
     }
+
+	@Override
+	public EmployeeData getDataById(String id) {
+		return employeeMapper.getDataById(id);
+	}
 }

@@ -12,7 +12,6 @@ import org.springframework.util.StringUtils;
 
 import com.grgbanking.electric.dao.IUserRoleDao;
 import com.grgbanking.electric.data.UserRoleData;
-import com.grgbanking.electric.entity.RoleOrganization;
 import com.grgbanking.electric.entity.UserRole;
 import com.grgbanking.electric.page.IPage;
 import com.grgbanking.electric.page.IPagination;
@@ -20,7 +19,6 @@ import com.grgbanking.electric.page.Pager;
 import com.grgbanking.electric.param.UserRoleQueryParam;
 import com.grgbanking.electric.service.IUserRoleService;
 import com.grgbanking.electric.util.UUIDGeneratorUtil;
-
 
 @Service("userRoleService")
 public class UserRoleServiceImpl implements IUserRoleService {
