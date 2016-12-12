@@ -277,6 +277,7 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		recognitionLog.setIndexed(results[1]);
 		recognitionLog.setOrgName(employee.getOrgName());
 		recognitionLog.setIpaddr(ipaddr);
+		recognitionLog.setType("1");
 		recognitionLog.setEmployeeId(employeeId);
 		recognitionLog.setFingerveinId(fVein.getId());
 		recognitionLog.setCreateTime(new Date());
