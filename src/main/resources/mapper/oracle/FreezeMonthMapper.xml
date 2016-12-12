@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.grgbanking.electric.mapper.IFreezeMonthMapper">
+	<resultMap type="com.grgbanking.electric.entity.FreezeMonth" id="freezeMonth">
+		<id column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="TERMINAL_ID" property="terminalId" jdbcType="VARCHAR" />
+		<result column="TERMINAL_CODE" property="terminalCode" jdbcType="VARCHAR" />
+		<result column="SAMPLE_TIME" property="sampleTime" jdbcType="TIMESTAMP" />
+		<result column="ASSEMBLE_TOTALS" property="assembleTotals" jdbcType="INTEGER" />
+		<result column="FORWARD_HAS" property="forwardHas" jdbcType="INTEGER" />
+		<result column="FORWARD_NO" property="forwardNo" jdbcType="INTEGER" />
+		<result column="REVERSE_HAS" property="reverseHas" jdbcType="INTEGER" />
+		<result column="REVERSE_NO" property="reverseNo" jdbcType="INTEGER" />
+		<result column="TOTALS" property="totals" jdbcType="INTEGER" />
+		<result column="FORWARD_HAS_MONTH" property="forwardHasMonth" jdbcType="INTEGER" />
+		<result column="FORWARD_NO_MONTH" property="forwardNoMonth" jdbcType="INTEGER" />
+		<result column="REVERSE_HAS_MONTH" property="reverseHasMonth" jdbcType="INTEGER" />
+		<result column="REVERSE_NO_MONTH" property="reverseNoMonth" jdbcType="INTEGER" />
+		<result column="PEAK_TOTALS" property="peakTotals" jdbcType="INTEGER" />
+		<result column="FLAT_TOTALS" property="flatTotals" jdbcType="INTEGER" />
+		<result column="VALLEY_TOTALS" property="valleyTotals" jdbcType="INTEGER" />
+		<result column="TIP_TOTALS" property="tipTotals" jdbcType="INTEGER" />
+		<result column="MORNING_TOTALS" property="morningTotals" jdbcType="INTEGER" />
+		<result column="MIDDAY_TOTALS" property="middayTotals" jdbcType="INTEGER" />
+		<result column="NIGHT_TOTALS" property="nightTotals" jdbcType="INTEGER" />
+		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
+		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="CREATE_BY" property="createBy" jdbcType="VARCHAR" />
+		<result column="UPDATE_BY" property="updateBy" jdbcType="VARCHAR" />
+		<result column="REMARKS" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="sqlQuery">
+        FROM FV_FREEZEMONTH a left join FV_TERMINAL b on a.TERMINAL_ID = b.ID where 1=1
+		
+		<if test="param.terminalId != null and param.terminalId != ''">
+			AND a.TERMINAL_ID = #{param.terminalId, jdbcType=VARCHAR}
+		</if>
+		<if test="param.createDateBegin != null and param.createDateBegin != ''">
+            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
+        </if>
+        <if test="param.createDateEnd != null and param.createDateEnd != ''">
+            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
+        </if>
+	</sql>
+	
+	<!-- 根据ID查找 -->
+	<select id="getById" resultMap="freezeMonth">
+    	SELECT * FROM FV_FREEZEMONTH WHERE ID = #{id, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<!-- 多条件查找 -->
+  	<select id="getData" resultMap="freezeMonth">
+    	SELECT * FROM FV_FREEZEMONTH WHERE ID = #{param.id, jdbcType=VARCHAR}
+  	</select>
+  	
+  	<select id="count" resultType="java.lang.Integer">
+		SELECT COUNT(1) <include refid="sqlQuery"/>
+	</select>
+	<select id="query" resultMap="freezeMonth">
+		SELECT 
+			b.CODE TERMINAL_CODE,
+			a.* 
+			<include refid="sqlQuery"/>
+			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
+	</select>
+	<select id="queryAll" resultMap="freezeMonth">
+		SELECT a.* FROM FV_FREEZEMONTH a
+			order by a.CREATE_TIME desc
+	</select>
+  	
+  	<!-- 新增 -->
+  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO FV_FREEZEMONTH
+		  (ID,
+		   	SAMPLE_TIME,
+			ASSEMBLE_TOTALS,
+			FORWARD_HAS,
+			FORWARD_NO,
+			REVERSE_HAS,
+			REVERSE_NO,
+			TOTALS,
+			FORWARD_HAS_MONTH,
+			FORWARD_NO_MONTH,
+			REVERSE_HAS_MONTH,
+			REVERSE_NO_MONTH,
+			PEAK_TOTALS,
+			FLAT_TOTALS,
+			VALLEY_TOTALS,
+			TIP_TOTALS,
+			MORNING_TOTALS,
+			MIDDAY_TOTALS,
+			NIGHT_TOTALS,
+			TERMINAL_ID,
+		   	VERSION,
+		   	CREATE_TIME,
+		   	CREATE_BY,
+		   	REMARKS)
+		VALUES
+		  (#{param.id, jdbcType=VARCHAR},
+		   	#{param.sampleTime, jdbcType=TIMESTAMP},
+			#{param.assembleTotals, jdbcType=INTEGER},
+			#{param.forwardHas, jdbcType=INTEGER},
+			#{param.forwardNo, jdbcType=INTEGER},
+			#{param.reverseHas, jdbcType=INTEGER},
+			#{param.reverseNo, jdbcType=INTEGER},
+			#{param.totals, jdbcType=INTEGER},
+			#{param.forwardHasMonth, jdbcType=INTEGER},
+			#{param.forwardNoMonth, jdbcType=INTEGER},
+			#{param.reverseHasMonth, jdbcType=INTEGER},
+			#{param.reverseNoMonth, jdbcType=INTEGER},
+			#{param.peakTotals, jdbcType=INTEGER},
+			#{param.flatTotals, jdbcType=INTEGER},
+			#{param.valleyTotals, jdbcType=INTEGER},
+			#{param.tipTotals, jdbcType=INTEGER},
+			#{param.morningTotals, jdbcType=INTEGER},
+			#{param.middayTotals, jdbcType=INTEGER},
+			#{param.nightTotals, jdbcType=INTEGER},
+			#{param.terminalId, jdbcType=VARCHAR},
+		   	#{param.version, jdbcType=INTEGER},
+		   	#{param.createTime, jdbcType=TIMESTAMP},
+		   	#{param.createBy, jdbcType=VARCHAR},
+		   	#{param.remarks, jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 批量新增 -->
+	<insert id="saveBatch">
+		INSERT INTO FV_FREEZEMONTH
+		  (ID,
+		   	SAMPLE_TIME,
+			ASSEMBLE_TOTALS,
+			FORWARD_HAS,
+			FORWARD_NO,
+			REVERSE_HAS,
+			REVERSE_NO,
+			TOTALS,
+			FORWARD_HAS_MONTH,
+			FORWARD_NO_MONTH,
+			REVERSE_HAS_MONTH,
+			REVERSE_NO_MONTH,
+			PEAK_TOTALS,
+			FLAT_TOTALS,
+			VALLEY_TOTALS,
+			TIP_TOTALS,
+			MORNING_TOTALS,
+			MIDDAY_TOTALS,
+			NIGHT_TOTALS,
+			TERMINAL_ID,
+		   	VERSION,
+		   	CREATE_TIME,
+		   	CREATE_BY,
+		   	REMARKS)
+		VALUES
+		<foreach collection="list" item="param" index="index" separator="," >
+		  (#{param.id, jdbcType=VARCHAR},
+		   	#{param.sampleTime, jdbcType=TIMESTAMP},
+			#{param.assembleTotals, jdbcType=INTEGER},
+			#{param.forwardHas, jdbcType=INTEGER},
+			#{param.forwardNo, jdbcType=INTEGER},
+			#{param.reverseHas, jdbcType=INTEGER},
+			#{param.reverseNo, jdbcType=INTEGER},
+			#{param.totals, jdbcType=INTEGER},
+			#{param.forwardHasMonth, jdbcType=INTEGER},
+			#{param.forwardNoMonth, jdbcType=INTEGER},
+			#{param.reverseHasMonth, jdbcType=INTEGER},
+			#{param.reverseNoMonth, jdbcType=INTEGER},
+			#{param.peakTotals, jdbcType=INTEGER},
+			#{param.flatTotals, jdbcType=INTEGER},
+			#{param.valleyTotals, jdbcType=INTEGER},
+			#{param.tipTotals, jdbcType=INTEGER},
+			#{param.morningTotals, jdbcType=INTEGER},
+			#{param.middayTotals, jdbcType=INTEGER},
+			#{param.nightTotals, jdbcType=INTEGER},
+			#{param.terminalId, jdbcType=VARCHAR},
+		   	#{param.version, jdbcType=INTEGER},
+		   	#{param.createTime, jdbcType=TIMESTAMP},
+		   	#{param.createBy, jdbcType=VARCHAR},
+		   	#{param.remarks, jdbcType=VARCHAR})
+		</foreach>  
+	</insert>
+	
+	<update id="update">
+		UPDATE FV_FREEZEMONTH a
+		<set>
+		<if test="param.sampleTime != null and param.sampleTime != ''">
+		 a.SAMPLE_TIME = #{param.sampleTime, jdbcType=TIMESTAMP},
+		</if>
+		<if test="param.assembleTotals != null and param.assembleTotals != ''">
+		 a.ASSEMBLE_TOTALS = #{param.assembleTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.forwardHas != null and param.forwardHas != ''">
+		 a.FORWARD_HAS = #{param.forwardHas, jdbcType=INTEGER},
+		</if>
+		<if test="param.forwardNo != null and param.forwardNo != ''">
+		 a.FORWARD_NO = #{param.forwardNo, jdbcType=INTEGER},
+		</if>
+		<if test="param.reverseHas != null and param.reverseHas != ''">
+		 a.REVERSE_HAS = #{param.reverseHas, jdbcType=INTEGER},
+		</if>
+		<if test="param.reverseNo != null and param.reverseNo != ''">
+		 a.REVERSE_NO = #{param.reverseNo, jdbcType=INTEGER},
+		</if>
+		<if test="param.totals != null and param.totals != ''">
+		 a.TOTALS = #{param.totals, jdbcType=INTEGER},
+		</if>
+		<if test="param.forwardHasMonth != null and param.forwardHasMonth != ''">
+		 a.FORWARD_HAS_MONTH = #{param.forwardHasMonth, jdbcType=INTEGER},
+		</if>
+		<if test="param.forwardNoMonth != null and param.forwardNoMonth != ''">
+		 a.FORWARD_NO_MONTH = #{param.forwardNoMonth, jdbcType=INTEGER},
+		</if>
+		<if test="param.reverseHasMonth != null and param.reverseHasMonth != ''">
+		 a.REVERSE_HAS_MONTH = #{param.reverseHasMonth, jdbcType=INTEGER},
+		</if>
+		<if test="param.reverseNoMonth != null and param.reverseNoMonth != ''">
+		 a.REVERSE_NO_MONTH = #{param.reverseNoMonth, jdbcType=INTEGER},
+		</if>
+		<if test="param.peakTotals != null and param.peakTotals != ''">
+		 a.PEAK_TOTALS = #{param.peakTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.flatTotals != null and param.flatTotals != ''">
+		 a.FLAT_TOTALS = #{param.flatTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.valleyTotals != null and param.valleyTotals != ''">
+		 a.VALLEY_TOTALS = #{param.valleyTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.tipTotals != null and param.tipTotals != ''">
+		 a.TIP_TOTALS = #{param.tipTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.morningTotals != null and param.morningTotals != ''">
+		 a.MORNING_TOTALS = #{param.morningTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.middayTotals != null and param.middayTotals != ''">
+		 a.MIDDAY_TOTALS = #{param.middayTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.nightTotals != null and param.nightTotals != ''">
+		 a.NIGHT_TOTALS = #{param.nightTotals, jdbcType=INTEGER},
+		</if>
+		<if test="param.terminalId != null and param.terminalId != ''">
+		 a.TERMINAL_ID = #{param.terminalId, jdbcType=VARCHAR},
+		</if>
+		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
+		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
+		</set>
+		WHERE a.ID = #{param.id, jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 根据ID删除-->
+	<delete id="deleteById">
+		delete FROM FV_FREEZEMONTH a where a.ID = #{id, jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 多条件删除 -->
+	<delete id="delete">
+		delete FROM FV_FREEZEMONTH a where a.ID = #{param.id, jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 根据ID批量删除-->
+	<delete id="deleteByIds">
+		delete FROM FV_FREEZEMONTH a where a.ID in (
+		<foreach collection="ids" item="id" index="index" separator="," >
+		  #{id, jdbcType=VARCHAR}
+		</foreach>)
+	</delete>
+</mapper>
