@@ -127,6 +127,14 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		result.setMessage(OptEnum.HeartBeat.name());
 		return result;
 	}
+	
+	@Override
+	public Result syncTime(String json, String ipaddr) {
+		Result result = new Result();
+		result.setCode(String.valueOf(StatusEnum.SUCCESS.getValue()));
+		result.setMessage(DateUtil.getDateTime(new Date()));
+		return result;
+	}
 
 	@Override
 	public Result registerEmployee(String json, String ipaddr) {
@@ -215,7 +223,6 @@ public class RecognitionServiceImpl implements IRecognitionService {
 
 	@Override
 	public Result recognitionFingerVein(String json, String ipaddr) {
-		Result result = null;
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		String sample = jsonObject.getString("sample");
 		if (StringUtils.isEmpty(sample)) {
@@ -266,7 +273,7 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		String employeeId = fVein.getEmployeeId();
 		EmployeeData employee = employeeDao.getDataById(employeeId);
 		message.append(employee.getName()).append("=").append(employee.getCode()).append("=").append(fVein.getSeq())
-				.append("=").append(results[0]).append("=");
+				.append("=").append(results[0]);
 
 		RecognitionLog recognitionLog = new RecognitionLog();
 		recognitionLog.setId(UUIDGeneratorUtil.getUUID());
@@ -282,16 +289,18 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		recognitionLog.setFingerveinId(fVein.getId());
 		recognitionLog.setCreateTime(new Date());
 		recognitionLog.setCreateBy(OptEnum.SYSTEM.name().toLowerCase());
+		
+		Result result = new Result();
 		if (Float.parseFloat(String.valueOf(results[0])) > threshold && results[1] > -1) {
 			// 识别通过
-			message.append(String.valueOf(StatusEnum.SUCCESS.getValue()));
 			if (!StringUtils.isEmpty(employee.getOrgName())) {
 				message.append("=").append(employee.getOrgName());
 			}
+			result.setCode(String.valueOf(StatusEnum.SUCCESS.getValue()));
 			recognitionLog.setStatus(String.valueOf(StatusEnum.SUCCESS.getValue()));
 		} else {
 			LOGGER.info("识别失败");
-			message.append(String.valueOf(StatusEnum.FAIL.getValue()));
+			result.setCode(String.valueOf(StatusEnum.FAIL.getValue()));
 			recognitionLog.setStatus(String.valueOf(StatusEnum.FAIL.getValue()));
 		}
 		try {
@@ -304,27 +313,38 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		} catch (Exception e) {
 			LOGGER.error("文件写入失败", e);
 		}
-		result = new Result();
-		result.setCode(String.valueOf(StatusEnum.SUCCESS.getValue()));
 		result.setMessage(message.toString());
 		return result;
 	}
 
 	@Override
 	public Result recognitionPassword(String json, String ipaddr) {
-		Result result = null;
-		final JSONObject jsonObject = JSONObject.fromObject(json);
+		JSONObject jsonObject = JSONObject.fromObject(json);
 		String password = jsonObject.getString("password");
 		if (StringUtils.isEmpty(password)) {
 			throw new IllegalArgumentException("密码不能为空");
 		}
-		String pwd = this.rpassword;
-		if (password.equals(pwd)) {
-			result = new Result();
+		Result result = new Result();
+		RecognitionLog recognitionLog = new RecognitionLog();
+		recognitionLog.setId(UUIDGeneratorUtil.getUUID());
+		recognitionLog.setIpaddr(ipaddr);
+		recognitionLog.setType("2");
+		recognitionLog.setCreateTime(new Date());
+		recognitionLog.setCreateBy(OptEnum.SYSTEM.name().toLowerCase());
+		if (password.equals(this.rpassword)) {
+			recognitionLog.setStatus(String.valueOf(StatusEnum.SUCCESS.getValue()));
 			result.setCode(String.valueOf(StatusEnum.SUCCESS.getValue()));
 			result.setMessage("验证通过");
 		} else {
-			throw new IllegalArgumentException("验证不通过");
+			LOGGER.info("验证不通过");
+			recognitionLog.setStatus(String.valueOf(StatusEnum.FAIL.getValue()));
+			result.setCode(String.valueOf(StatusEnum.FAIL.getValue()));
+			result.setMessage("验证不通过");
+		}
+		try {
+			recognitionLogDao.save(recognitionLog);
+		} catch (Exception e) {
+			LOGGER.error("识别日志保存失败", e);
 		}
 		return result;
 	}

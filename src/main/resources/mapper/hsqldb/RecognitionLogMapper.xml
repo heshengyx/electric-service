@@ -49,6 +49,7 @@
         <if test="param.createDateEnd != null and param.createDateEnd != ''">
             AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
         </if>
+        AND a.TYPE = '1'
 	</sql>
 	
 	<!-- 根据ID查找 -->
