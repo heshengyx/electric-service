@@ -19,7 +19,6 @@ import com.grgbanking.electric.param.RecognitionLogQueryParam;
 import com.grgbanking.electric.service.IRecognitionLogService;
 import com.grgbanking.electric.util.UUIDGeneratorUtil;
 
-
 @Service("recognitionLogService")
 public class RecognitionLogServiceImpl implements IRecognitionLogService {
 
@@ -28,11 +27,6 @@ public class RecognitionLogServiceImpl implements IRecognitionLogService {
     
     @Override
     public void save(RecognitionLog recognitionLog) {
-        String name = recognitionLog.getName();
-if (StringUtils.isEmpty(name)) {
-throw new DataAccessResourceFailureException("采样时间不能为空");
-}
-
         recognitionLog.setId(UUIDGeneratorUtil.getUUID());
         recognitionLog.setCreateTime(new Date());
         

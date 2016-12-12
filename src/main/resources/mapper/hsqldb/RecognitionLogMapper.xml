@@ -25,7 +25,10 @@
 	<resultMap type="com.grgbanking.electric.data.RecognitionLogData" id="recognitionLogData">
         <result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
         <result column="STATUS" property="status" jdbcType="VARCHAR" />
-        <result column="TOTAL" property="total" jdbcType="INTEGER" />
+        <result column="REC_SUCCTOTAL" property="recSuccTotal" jdbcType="INTEGER" />
+        <result column="REC_FAILTOTAL" property="recFailTotal" jdbcType="INTEGER" />
+        <result column="PWD_SUCCTOTAL" property="pwdSuccTotal" jdbcType="INTEGER" />
+        <result column="PWD_FAILTOTAL" property="pwdFailTotal" jdbcType="INTEGER" />
     </resultMap>
 
 	<sql id="sqlQuery">
@@ -74,9 +77,26 @@
             group by a.IPADDR
     </select>
     <select id="queryReport" resultMap="recognitionLogData">
-        select a.IPADDR, a.STATUS, count(1) TOTAL from RECOGNITION_LOG a 
-            where 1=1
-            <if test="param.ipaddr != null and param.ipaddr != ''">
+	    SELECT a.IPADDR,
+	       count(case
+	               when a.TYPE = '1' and a.STATUS = '1' then
+	                1
+	             end) REC_SUCCTOTAL,
+	       count(case
+	               when a.TYPE = '1' and a.STATUS = '0' then
+	                1
+	             end) REC_FAILTOTAL,
+	       count(case
+	               when a.TYPE = '2' and a.STATUS = '1' then
+	                1
+	             end) PWD_SUCCTOTAL,
+	       count(case
+	               when a.TYPE = '2' and a.STATUS = '0' then
+	                1
+	             end) PWD_FAILTOTAL
+		  from RECOGNITION_LOG a
+		 where 1 = 1
+		 	<if test="param.ipaddr != null and param.ipaddr != ''">
 	            AND a.IPADDR = #{param.ipaddr}
 	        </if>
 	        <if test="param.status != null and param.status != ''">
@@ -88,7 +108,7 @@
 	        <if test="param.createDateEnd != null and param.createDateEnd != ''">
 	            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
 	        </if>
-            group by a.IPADDR, a.STATUS
+		 group by a.IPADDR
     </select>
   	
   	<!-- 新增 -->
@@ -100,6 +120,7 @@
 			SEQ,
 			THRESHOLD,
 			INDEXED,
+			TYPE,
 			STATUS,
 			ORG_NAME,
 			IPADDR,
@@ -117,6 +138,7 @@
 			#{param.seq, jdbcType=VARCHAR},
 			#{param.threshold, jdbcType=VARCHAR},
 			#{param.indexed, jdbcType=INTEGER},
+			#{param.type, jdbcType=VARCHAR},
 			#{param.status, jdbcType=VARCHAR},
 			#{param.orgName, jdbcType=VARCHAR},
 			#{param.ipaddr, jdbcType=VARCHAR},

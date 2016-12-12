@@ -74,6 +74,10 @@
         <property name="service" ref="fingerVeinService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.IFingerVeinService" />
     </bean>
+    <bean name="/recognitionService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service" ref="recognitionService" />
+        <property name="serviceInterface" value="com.grgbanking.electric.service.IRecognitionService" />
+    </bean>
     <bean name="/recognitionLogService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service" ref="recognitionLogService" />
         <property name="serviceInterface" value="com.grgbanking.electric.service.IRecognitionLogService" />
