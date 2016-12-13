@@ -61,7 +61,7 @@
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO CURVE
 		  (ID,
 		   	SAMPLE_TIME,

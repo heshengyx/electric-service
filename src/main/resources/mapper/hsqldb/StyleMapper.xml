@@ -4,8 +4,7 @@
 	<resultMap type="com.grgbanking.electric.entity.Style" id="style">
 		<id column="ID" property="id" jdbcType="VARCHAR" />
 		<result column="NAME" property="name" jdbcType="VARCHAR" />
-<result column="CODE" property="code" jdbcType="VARCHAR" />
-
+		<result column="CODE" property="code" jdbcType="VARCHAR" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -16,13 +15,13 @@
 
 	<sql id="sqlQuery">
 		FROM STYLE a where 1=1
+		
 		<if test="param.name != null and param.name != ''">
- AND a.NAME = #{param.name}
-</if>
-<if test="param.code != null and param.code != ''">
- AND a.CODE = #{param.code}
-</if>
-
+		 AND a.NAME = #{param.name}
+		</if>
+		<if test="param.code != null and param.code != ''">
+		 AND a.CODE = #{param.code}
+		</if>
 		<if test="param.createDateBegin != null and param.createDateBegin != ''">
             AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[>=]]> #{param.createDateBegin}
         </if>
@@ -54,48 +53,44 @@
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO STYLE
 		  (ID,
-		   NAME,
-CODE,
-
-		   VERSION,
-		   CREATE_TIME,
-		   CREATE_BY,
-		   REMARKS)
+		    NAME,
+			CODE,
+		    VERSION,
+		    CREATE_TIME,
+		    CREATE_BY,
+		    REMARKS)
 		VALUES
 		  (#{param.id, jdbcType=VARCHAR},
-		   #{param.name, jdbcType=VARCHAR},
-#{param.code, jdbcType=VARCHAR},
-
-		   #{param.version, jdbcType=INTEGER},
-		   #{param.createTime, jdbcType=TIMESTAMP},
-		   #{param.createBy, jdbcType=VARCHAR},
-		   #{param.remarks, jdbcType=VARCHAR})
+		    #{param.name, jdbcType=VARCHAR},
+			#{param.code, jdbcType=VARCHAR},
+		    #{param.version, jdbcType=INTEGER},
+		    #{param.createTime, jdbcType=TIMESTAMP},
+		    #{param.createBy, jdbcType=VARCHAR},
+		    #{param.remarks, jdbcType=VARCHAR})
 	</insert>
 	
 	<!-- 批量新增 -->
 	<insert id="saveBatch">
 		INSERT INTO STYLE
 		  (ID,
-		   NAME,
-CODE,
-
-		   VERSION,
-		   CREATE_TIME,
-		   CREATE_BY,
-		   REMARKS)
+		    NAME,
+			CODE,
+		    VERSION,
+		    CREATE_TIME,
+		    CREATE_BY,
+		    REMARKS)
 		VALUES
 		<foreach collection="list" item="param" index="index" separator="," >
 		  (#{param.id, jdbcType=VARCHAR},
-		   #{param.name, jdbcType=VARCHAR},
-#{param.code, jdbcType=VARCHAR},
-
-		   #{param.version, jdbcType=INTEGER},
-		   #{param.createTime, jdbcType=TIMESTAMP},
-		   #{param.createBy, jdbcType=VARCHAR},
-		   #{param.remarks, jdbcType=VARCHAR})
+		    #{param.name, jdbcType=VARCHAR},
+			#{param.code, jdbcType=VARCHAR},
+		    #{param.version, jdbcType=INTEGER},
+		    #{param.createTime, jdbcType=TIMESTAMP},
+		    #{param.createBy, jdbcType=VARCHAR},
+		    #{param.remarks, jdbcType=VARCHAR})
 		</foreach>  
 	</insert>
 	
@@ -103,12 +98,11 @@ CODE,
 		UPDATE STYLE a
 		<set>
 		<if test="param.name != null and param.name != ''">
- a.NAME = #{param.name, jdbcType=VARCHAR},
-</if>
-<if test="param.code != null and param.code != ''">
- a.CODE = #{param.code, jdbcType=VARCHAR},
-</if>
-
+		 a.NAME = #{param.name, jdbcType=VARCHAR},
+		</if>
+		<if test="param.code != null and param.code != ''">
+		 a.CODE = #{param.code, jdbcType=VARCHAR},
+		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
 		</set>

@@ -97,35 +97,43 @@
 		SELECT COUNT(1) <include refid="sqlQuery"/>
 	</select>
 	<select id="query" resultMap="terminalQueryData">
-		SELECT 
-			a.ID,
-			a.NAME,
-			a.CODE,
-			c.NAME ORG_NAME,
-			b.NAME STYLE_NAME,
-			a.STATUS,
-			a.IPADDR,
-			a.HEARTBEAT,
-			a.CREATE_TIME
-			<include refid="sqlQuery"/>
-			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
+		SELECT t.*
+		  FROM (SELECT tt.*, ROWNUM AS ROWNO
+		          FROM (SELECT 
+		          			a.ID,
+							a.NAME,
+							a.CODE,
+							c.NAME ORG_NAME,
+							b.NAME STYLE_NAME,
+							a.STATUS,
+							a.IPADDR,
+							a.HEARTBEAT,
+							a.CREATE_TIME
+		                  <include refid="sqlQuery"/>
+		                 ORDER BY a.CREATE_TIME DESC) tt
+		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="countData" resultType="java.lang.Integer">
 		SELECT COUNT(1) <include refid="sqlQueryData"/>
 	</select>
 	<select id="queryData" resultMap="terminalQueryData">
-		SELECT 
-			a.ID,
-			a.NAME,
-			a.CODE,
-			c.NAME ORG_NAME,
-			b.NAME STYLE_NAME,
-			a.STATUS,
-			a.IPADDR,
-			a.HEARTBEAT,
-			a.CREATE_TIME
-			<include refid="sqlQueryData"/>
-			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
+		SELECT t.*
+		  FROM (SELECT tt.*, ROWNUM AS ROWNO
+		          FROM (SELECT 
+		          			a.ID,
+							a.NAME,
+							a.CODE,
+							c.NAME ORG_NAME,
+							b.NAME STYLE_NAME,
+							a.STATUS,
+							a.IPADDR,
+							a.HEARTBEAT,
+							a.CREATE_TIME
+		                  <include refid="sqlQueryData"/>
+		                 ORDER BY a.CREATE_TIME DESC) tt
+		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="queryAll" resultMap="terminal">
 		SELECT a.* FROM FV_TERMINAL a where 1=1
@@ -144,11 +152,11 @@
 	<select id="queryTimeout" resultMap="terminal">
 		SELECT a.*
 		  	FROM FV_TERMINAL a
-		 WHERE (NOW() - a.HEARTBEAT) is not null and (NOW() - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER}
+		 WHERE (SYSDATE - a.HEARTBEAT) is not null and (SYSDATE - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER}
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO FV_TERMINAL
 		  (ID,
 		   NAME,
@@ -190,21 +198,22 @@
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
-		   REMARKS)
-		VALUES
-		<foreach collection="list" item="param" index="index" separator="," >
-		  (#{param.id, jdbcType=VARCHAR},
-		   #{param.name, jdbcType=VARCHAR},
-		   #{param.code, jdbcType=VARCHAR},
-		   #{param.orgId, jdbcType=VARCHAR},
-           #{param.styleId, jdbcType=VARCHAR},
-           #{param.status, jdbcType=VARCHAR},
-		   #{param.ipaddr, jdbcType=VARCHAR},
-		   #{param.version, jdbcType=INTEGER},
-		   #{param.createTime, jdbcType=TIMESTAMP},
-		   #{param.createBy, jdbcType=VARCHAR},
-		   #{param.remarks, jdbcType=VARCHAR})
-		</foreach>  
+		   REMARKS)   
+	    <foreach close=")" collection="list" item="param" index="index" open="(" separator="union">   
+    	  select   
+       		#{param.id, jdbcType=VARCHAR},
+		    #{param.name, jdbcType=VARCHAR},
+		    #{param.code, jdbcType=VARCHAR},
+		    #{param.orgId, jdbcType=VARCHAR},
+            #{param.styleId, jdbcType=VARCHAR},
+            #{param.status, jdbcType=VARCHAR},
+		    #{param.ipaddr, jdbcType=VARCHAR},
+		    #{param.version, jdbcType=INTEGER},
+		    #{param.createTime, jdbcType=TIMESTAMP},
+		    #{param.createBy, jdbcType=VARCHAR},
+		    #{param.remarks, jdbcType=VARCHAR} 
+    	  from dual   
+	    </foreach>
 	</insert>
 	
 	<update id="update">
@@ -252,8 +261,7 @@
 		WHERE a.ID in (
 			SELECT a.ID
 			  	FROM FV_TERMINAL a
-			 WHERE (NOW() - a.HEARTBEAT) is not null and (NOW() - a.HEARTBEAT) > #{timeout, jdbcType=INTEGER}
-			    AND (a.STATUS != '0'))
+			 WHERE (SYSDATE - a.HEARTBEAT) is not null and (ROUND(TO_NUMBER((SYSDATE - a.HEARTBEAT) * 24 * 60)) * 100) > #{timeout, jdbcType=INTEGER})
 	</update>
 	
 	<!-- 根据ID删除-->

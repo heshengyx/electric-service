@@ -48,12 +48,11 @@
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO USER_ROLE
 		  (ID,
-		   USER_ID,
-ROLE_ID,
-
+		   	USER_ID,
+			ROLE_ID,
 		   	VERSION,
 		   	CREATE_TIME,
 		   	CREATE_BY,
@@ -61,8 +60,7 @@ ROLE_ID,
 		VALUES
 		  (#{param.id, jdbcType=VARCHAR},
 		   #{param.userId, jdbcType=VARCHAR},
-#{param.roleId, jdbcType=VARCHAR},
-
+			#{param.roleId, jdbcType=VARCHAR},
 		   	#{param.version, jdbcType=INTEGER},
 		   	#{param.createTime, jdbcType=TIMESTAMP},
 		   	#{param.createBy, jdbcType=VARCHAR},
@@ -73,9 +71,8 @@ ROLE_ID,
 	<insert id="saveBatch">
 		INSERT INTO USER_ROLE
 		  (ID,
-		   USER_ID,
-ROLE_ID,
-
+		   	USER_ID,
+			ROLE_ID,
 		   	VERSION,
 		   	CREATE_TIME,
 		   	CREATE_BY,
@@ -83,9 +80,8 @@ ROLE_ID,
 		VALUES
 		<foreach collection="list" item="param" index="index" separator="," >
 		  (#{param.id, jdbcType=VARCHAR},
-		   #{param.userId, jdbcType=VARCHAR},
-#{param.roleId, jdbcType=VARCHAR},
-
+		    #{param.userId, jdbcType=VARCHAR},
+			#{param.roleId, jdbcType=VARCHAR},
 		   	#{param.version, jdbcType=INTEGER},
 		   	#{param.createTime, jdbcType=TIMESTAMP},
 		   	#{param.createBy, jdbcType=VARCHAR},
@@ -97,12 +93,11 @@ ROLE_ID,
 		UPDATE USER_ROLE a
 		<set>
 		<if test="param.userId != null and param.userId != ''">
- a.USER_ID = #{param.userId, jdbcType=VARCHAR},
-</if>
-<if test="param.roleId != null and param.roleId != ''">
- a.ROLE_ID = #{param.roleId, jdbcType=VARCHAR},
-</if>
-
+		 a.USER_ID = #{param.userId, jdbcType=VARCHAR},
+		</if>
+		<if test="param.roleId != null and param.roleId != ''">
+		 a.ROLE_ID = #{param.roleId, jdbcType=VARCHAR},
+		</if>
 		a.UPDATE_TIME = #{param.updateTime, jdbcType=TIMESTAMP},
 		a.UPDATE_BY = #{param.updateBy, jdbcType=VARCHAR}
 		</set>

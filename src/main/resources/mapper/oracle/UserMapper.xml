@@ -45,8 +45,13 @@
 		SELECT COUNT(1) <include refid="sqlQuery"/>
 	</select>
 	<select id="query" resultMap="user">
-		SELECT a.* <include refid="sqlQuery"/>
-			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
+		SELECT t.*
+		  FROM (SELECT tt.*, ROWNUM AS ROWNO
+		          FROM (SELECT a.*
+		                  <include refid="sqlQuery"/>
+		                 ORDER BY a.CREATE_TIME DESC) tt
+		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="queryAll" resultMap="user">
 		SELECT a.* FROM FV_USER a
@@ -54,7 +59,7 @@
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO FV_USER
 		  (ID,
 		    NAME,
@@ -103,10 +108,10 @@
 		    VERSION,
 		    CREATE_TIME,
 		    CREATE_BY,
-		    REMARKS)
-		VALUES
-		<foreach collection="list" item="param" index="index" separator="," >
-		  (#{param.id, jdbcType=VARCHAR},
+		    REMARKS)   
+	    <foreach close=")" collection="list" item="param" index="index" open="(" separator="union">   
+    	  select   
+       		#{param.id, jdbcType=VARCHAR},
 		    #{param.name, jdbcType=VARCHAR},
 			#{param.code, jdbcType=VARCHAR},
 			#{param.sex, jdbcType=VARCHAR},
@@ -119,8 +124,9 @@
 		    #{param.version, jdbcType=INTEGER},
 		    #{param.createTime, jdbcType=TIMESTAMP},
 		    #{param.createBy, jdbcType=VARCHAR},
-		    #{param.remarks, jdbcType=VARCHAR})
-		</foreach>  
+		    #{param.remarks, jdbcType=VARCHAR} 
+    	  from dual   
+	    </foreach>
 	</insert>
 	
 	<update id="update">

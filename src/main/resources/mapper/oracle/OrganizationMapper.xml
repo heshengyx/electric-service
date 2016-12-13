@@ -50,8 +50,13 @@
 		SELECT COUNT(1) <include refid="sqlQuery"/>
 	</select>
 	<select id="query" resultMap="organization">
-		SELECT a.* <include refid="sqlQuery"/>
-			order by a.CREATE_TIME desc limit #{start, jdbcType=INTEGER}, #{end, jdbcType=INTEGER}
+		SELECT t.*
+		  FROM (SELECT tt.*, ROWNUM AS ROWNO
+		          FROM (SELECT a.*
+		                  <include refid="sqlQuery"/>
+		                 ORDER BY a.CREATE_TIME DESC) tt
+		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="queryAll" resultMap="organization">
 		SELECT a.* FROM FV_ORGANIZATION a where 1=1
@@ -77,12 +82,11 @@
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO FV_ORGANIZATION
 		  (ID,
 		   NAME,
 		   CODE,
-		   LEVEL,
 		   PARENT_ID,
 		   VERSION,
 		   CREATE_TIME,
@@ -92,7 +96,6 @@
 		  (#{param.id, jdbcType=VARCHAR},
 		   #{param.name, jdbcType=VARCHAR},
 		   #{param.code, jdbcType=VARCHAR},
-		   #{param.level, jdbcType=INTEGER},
 		   #{param.parentId, jdbcType=VARCHAR},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
@@ -106,24 +109,23 @@
 		  (ID,
 		   NAME,
 		   CODE,
-		   LEVEL,
 		   PARENT_ID,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
-		   REMARKS)
-		VALUES
-		<foreach collection="list" item="item" index="index" separator="," >
-		  (#{item.id, jdbcType=VARCHAR},
-		   #{item.name, jdbcType=VARCHAR},
-		   #{item.code, jdbcType=VARCHAR},
-		   #{item.level, jdbcType=INTEGER},
-		   #{item.parentId, jdbcType=VARCHAR},
-		   #{item.version, jdbcType=INTEGER},
-		   #{item.createTime, jdbcType=TIMESTAMP},
-		   #{item.createBy, jdbcType=VARCHAR},
-		   #{item.remarks, jdbcType=VARCHAR})
-		</foreach>  
+		   REMARKS)   
+	    <foreach close=")" collection="list" item="param" index="index" open="(" separator="union">   
+    	  select   
+       		#{item.id, jdbcType=VARCHAR},
+		    #{item.name, jdbcType=VARCHAR},
+		    #{item.code, jdbcType=VARCHAR},
+		    #{item.parentId, jdbcType=VARCHAR},
+		    #{item.version, jdbcType=INTEGER},
+		    #{item.createTime, jdbcType=TIMESTAMP},
+		    #{item.createBy, jdbcType=VARCHAR},
+		    #{item.remarks, jdbcType=VARCHAR} 
+    	  from dual   
+	    </foreach>
 	</insert>
 	
 	<update id="update">

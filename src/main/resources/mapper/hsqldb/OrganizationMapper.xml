@@ -77,12 +77,11 @@
 	</select>
   	
   	<!-- 新增 -->
-  	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+  	<insert id="save">
 		INSERT INTO ORGANIZATION
 		  (ID,
 		   NAME,
 		   CODE,
-		   LEVEL,
 		   PARENT_ID,
 		   VERSION,
 		   CREATE_TIME,
@@ -94,7 +93,6 @@
 		   #{param.code, jdbcType=VARCHAR},
 		   #{param.level, jdbcType=INTEGER},
 		   #{param.parentId, jdbcType=VARCHAR},
-		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
 		   #{param.createBy, jdbcType=VARCHAR},
 		   #{param.remarks, jdbcType=VARCHAR})

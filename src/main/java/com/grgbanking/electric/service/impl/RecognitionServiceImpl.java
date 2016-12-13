@@ -102,12 +102,13 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		
 		if (terminal == null) {
 			terminal = new Terminal();
+			terminal.setId(UUIDGeneratorUtil.getUUID());
 			terminal.setName("指静脉终端");
 			terminal.setCode(code);
+			terminal.setIpaddr(ipaddr);
 			terminal.setHeartbeat(new Date()); // 当前心跳时间
 			terminal.setStatus(String.valueOf(StatusEnum.SUCCESS.getValue())); // 1在线,0断线
 			terminal.setCreateBy(OptEnum.SYSTEM.name().toLowerCase());
-			terminal.setId(UUIDGeneratorUtil.getUUID());
 			terminal.setCreateTime(new Date());
 
 			int count = terminalDao.save(terminal);
@@ -196,6 +197,7 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		} else {
 			result = new Result();
 			FingerVein fingerVein = new FingerVein();
+			fingerVein.setId(UUIDGeneratorUtil.getUUID());
 			fingerVein.setSeq("01");
 			fingerVein.setEmployeeId(employee.getId());
 			fingerVein.setStatus(String.valueOf(StatusEnum.SUCCESS.getValue()));
@@ -203,7 +205,6 @@ public class RecognitionServiceImpl implements IRecognitionService {
 				fingerVein.setFeature(BASE64Util.decoder(feature));
 			} catch (IOException e) {
 			}
-			fingerVein.setId(UUIDGeneratorUtil.getUUID());
 			fingerVein.setCreateTime(new Date());
 
 			int count = fingerVeinDao.save(fingerVein);
@@ -309,7 +310,7 @@ public class RecognitionServiceImpl implements IRecognitionService {
 			LOGGER.error("识别日志保存失败", e);
 		}
 		try {
-			writeFile(message.toString(), sample, ipaddr);
+			writeFile(message.toString(), result.getCode(), sample, ipaddr);
 		} catch (Exception e) {
 			LOGGER.error("文件写入失败", e);
 		}
@@ -382,10 +383,10 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		return new int[] { similarity[0], index[0] };
 	}
 	
-	private void writeFile(String result, String sample, String ip) {
+	private void writeFile(String result, String code, String sample, String ip) {
 		String folder = this.folder;
 		String[] message = result.split("[=]");
-		if ("1".equals(message[4])) {
+		if (String.valueOf(StatusEnum.SUCCESS.getValue()).equals(code)) {
 			folder += File.separator + "accept";
 		} else {
 			folder += File.separator + "reject";

@@ -9,6 +9,7 @@ import com.grgbanking.electric.dao.ITerminalDao;
 import com.grgbanking.electric.entity.Terminal;
 import com.grgbanking.electric.mapper.ITerminalMapper;
 import com.grgbanking.electric.param.TerminalQueryParam;
+import com.grgbanking.electric.util.UUIDGeneratorUtil;
 
 
 @Repository
