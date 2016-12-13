@@ -1,0 +1,43 @@
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('A7BF33DE87B242F188F32DEFEBA56801', '实时数据', 'manager:timeliness', '/manager/timeliness', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('B7BF33DE87B242F188F32DEFEBA56801', '采集任务', 'manager:sampleJob', '/manager/sampleJob', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('C7BF33DE87B242F188F32DEFEBA56801', '监测点维护', 'manager:monitor', '/manager/monitor', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('D7BF33DE87B242F188F32DEFEBA56801', '采集器维护', 'manager:collector', '/manager/collector', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('E7BF33DE87B242F188F32DEFEBA56801', '升级管理', 'manager:upgraded', '/manager/upgraded', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('F7BF33DE87B242F188F32DEFEBA56801', '流量管理', 'manager:flow', '/manager/flow', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('G7BF33DE87B242F188F32DEFEBA56801', '通道监测', 'manager:channel', '/manager/channel', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('H7BF33DE87B242F188F32DEFEBA56801', '终端管理', 'manager:terminal', '/manager/terminal', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('I7BF33DE87B242F188F32DEFEBA56801', '组织机构', 'manager:organization', '/manager/organization', null, null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('J7BF33DE87B242F188F32DEFEBA56801', '系统管理', 'manager:system', '/manager/system', null, null, 0, SYSDATE, null, 'admin', null, null);
+
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('H7BF33DE87B242F188F32DEFEBA56802', '终端列表', 'manager:terminal:list', '/manager/terminal/list', 'H7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('H7BF33DE87B242F188F32DEFEBA56803', '终端类别', 'manager:style:list', '/manager/style/list', 'H7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('H7BF33DE87B242F188F32DEFEBA56804', '终端关联', 'manager:associate:list', '/manager/associate/list', 'H7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('I7BF33DE87B242F188F32DEFEBA56802', '机构管理', 'manager:organization:list', '/manager/organization/list', 'I7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('I7BF33DE87B242F188F32DEFEBA56803', '雇员管理', 'manager:employee:list', '/manager/employee/list', 'I7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('I7BF33DE87B242F188F32DEFEBA56804', '权限管理', 'manager:permission:list', '/manager/permission/list', 'I7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('I7BF33DE87B242F188F32DEFEBA56805', '角色管理', 'manager:role:list', '/manager/role/list', 'I7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('I7BF33DE87B242F188F32DEFEBA56806', '用户管理', 'manager:user:list', '/manager/user/list', 'I7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('J7BF33DE87B242F188F32DEFEBA56802', '识别日志', 'manager:recognitionLog:list', '/manager/recognitionLog/list', 'J7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+INSERT INTO FV_PERMISSION (ID, NAME, CODE, URL, PARENT_ID, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS) VALUES ('J7BF33DE87B242F188F32DEFEBA56803', '识别报表', 'manager:report:list', '/manager/report/list', 'J7BF33DE87B242F188F32DEFEBA56801', null, 0, SYSDATE, null, 'admin', null, null);
+
+insert into fv_employee
+  (ID, name, code, sex, version, create_time, create_by)
+  select t.pi_id id, t.pi_ctfname name, t.pi_ctfno code, 0 sex, 0 version, t.pi_createtime create_time, 'system' create_by from ws_peopleinfo t;
+  
+insert into fv_fingervein
+  (ID, seq, status, feature, employee_id, version, create_time, create_by)
+  select t.ft_id id, t.ft_num seq, '1' status, t.ft_feature feature, t.pi_id employee_id, 0 version, t.ft_create_time create_time, 'system' create_by from finger_feature_gd t; 
+
+insert into fv_role (ID, NAME, CODE, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS)
+values ('747D57DCF1A546AA8C562EEADF21C050', '普通管理员', '100002', null, 0, SYSDATE, null, 'admin', '', '');
+
+insert into fv_role (ID, NAME, CODE, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS)
+values ('46D6BB067F61431382387DEEA85B6A31', '高级管理员', '100003', null, 0, SYSDATE, null, 'admin', '', '');
+
+insert into fv_role (ID, NAME, CODE, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS)
+values ('580E154A67944D42BB04110FDD6AA15B', '一般管理员', '100001', null, 0, SYSDATE, null, 'admin', '', '');
+
+insert into fv_user (ID, NAME, SEX, CODE, ACCOUNT, PASSWORD, EMAIL, PHONE, ORG_ID, ADMIN, ACTIVE, VERSION, CREATE_TIME, UPDATE_TIME, CREATE_BY, UPDATE_BY, REMARKS)
+values ('031771EC349F4227A0C03017BB3220C9', '张三', 1, 'sanzhang', 'admin', '123456', '', '', '', '1', null, 0, SYSDATE, null, '', '', '');

@@ -73,11 +73,11 @@
 			<version>0.9.1.2</version>
 		</dependency>
 		<!-- ojdbc14数据源 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc14</artifactId>
 			<version>10.2.0.4.0</version>
-		</dependency>
+		</dependency> -->
 		<!-- dbcp连接池 -->
 		<dependency>
 			<groupId>commons-dbcp</groupId>
