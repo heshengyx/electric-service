@@ -118,7 +118,6 @@
 			a.ID,
 			a.NAME,
 			a.CODE,
-			c.NAME ORG_NAME,
 			b.NAME STYLE_NAME,
 			a.STATUS,
 			a.IPADDR,

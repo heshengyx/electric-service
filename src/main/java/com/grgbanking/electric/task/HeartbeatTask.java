@@ -26,6 +26,6 @@ public class HeartbeatTask {
 		Terminal terminal = new Terminal();
 		terminal.setStatus(String.valueOf(StatusEnum.FAIL.getValue()));
 		int count = terminalDao.updateByTimeout(terminal, Integer.parseInt(timeout));
-		LOGGER.info("已断线终端个数[{}]", count);
+		LOGGER.info("更新断线终端个数[{}]", count);
 	}
 }

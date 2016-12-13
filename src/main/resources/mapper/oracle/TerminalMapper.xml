@@ -124,7 +124,6 @@
 		          			a.ID,
 							a.NAME,
 							a.CODE,
-							c.NAME ORG_NAME,
 							b.NAME STYLE_NAME,
 							a.STATUS,
 							a.IPADDR,
@@ -261,7 +260,8 @@
 		WHERE a.ID in (
 			SELECT a.ID
 			  	FROM FV_TERMINAL a
-			 WHERE (SYSDATE - a.HEARTBEAT) is not null and (ROUND(TO_NUMBER((SYSDATE - a.HEARTBEAT) * 24 * 60)) * 100) > #{timeout, jdbcType=INTEGER})
+			 WHERE (SYSDATE - a.HEARTBEAT) is not null and (ROUND(TO_NUMBER((SYSDATE - a.HEARTBEAT) * 24 * 60)) * 100) > #{timeout, jdbcType=INTEGER}
+			 	AND (a.STATUS != '0'))
 	</update>
 	
 	<!-- 根据ID删除-->
