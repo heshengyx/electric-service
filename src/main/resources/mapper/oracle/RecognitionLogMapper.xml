@@ -11,6 +11,7 @@
 		<result column="STATUS" property="status" jdbcType="VARCHAR" />
 		<result column="ORG_NAME" property="orgName" jdbcType="VARCHAR" />
 		<result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
+		<result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" />
 		<result column="TERMINAL_ID" property="terminalId" jdbcType="VARCHAR" />
 		<result column="EMPLOYEE_ID" property="employeeId" jdbcType="VARCHAR" />
 		<result column="FINGERVEIN_ID" property="fingerveinId" jdbcType="VARCHAR" />
@@ -25,6 +26,7 @@
 	<resultMap type="com.grgbanking.electric.data.RecognitionLogData" id="recognitionLogData">
         <result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
         <result column="STATUS" property="status" jdbcType="VARCHAR" />
+        <result column="LOCATION" property="location" jdbcType="VARCHAR" />
         <result column="REC_SUCCTOTAL" property="recSuccTotal" jdbcType="INTEGER" />
         <result column="REC_FAILTOTAL" property="recFailTotal" jdbcType="INTEGER" />
         <result column="PWD_SUCCTOTAL" property="pwdSuccTotal" jdbcType="INTEGER" />
@@ -71,7 +73,7 @@
 		          FROM (SELECT a.*
 		                  <include refid="sqlQuery"/>
 		                 ORDER BY a.CREATE_TIME DESC) tt
-		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		         WHERE ROWNUM <![CDATA[<=]]> (#{end, jdbcType=INTEGER} + #{start, jdbcType=INTEGER})) t
 		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="queryAll" resultMap="recognitionLog">
@@ -83,7 +85,7 @@
             group by a.IPADDR
     </select>
     <select id="queryReport" resultMap="recognitionLogData">
-	    SELECT a.IPADDR,
+	    SELECT a.IPADDR, b.LOCATION,
 	       count(case
 	               when a.TYPE = '1' and a.STATUS = '1' then
 	                1
@@ -100,7 +102,7 @@
 	               when a.TYPE = '2' and a.STATUS = '0' then
 	                1
 	             end) PWD_FAILTOTAL
-		  FROM FV_RECOGNITION_LOG a
+		  FROM FV_RECOGNITION_LOG a join FV_TERMINAL b on a.IPADDR = b.IPADDR
 		 where 1 = 1
 		 	<if test="param.ipaddr != null and param.ipaddr != ''">
 	            AND a.IPADDR = #{param.ipaddr}
@@ -114,7 +116,7 @@
 	        <if test="param.createDateEnd != null and param.createDateEnd != ''">
 	            AND to_char(a.CREATE_TIME, 'YYYY-MM-DD') <![CDATA[<=]]> #{param.createDateEnd}
 	        </if>
-		 group by a.IPADDR
+		 group by a.IPADDR, b.LOCATION
     </select>
   	
   	<!-- 新增 -->
@@ -130,6 +132,7 @@
 			STATUS,
 			ORG_NAME,
 			IPADDR,
+			FILE_PATH,
 			TERMINAL_ID,
 			EMPLOYEE_ID,
 			FINGERVEIN_ID,
@@ -148,6 +151,7 @@
 			#{param.status, jdbcType=VARCHAR},
 			#{param.orgName, jdbcType=VARCHAR},
 			#{param.ipaddr, jdbcType=VARCHAR},
+			#{param.filePath, jdbcType=VARCHAR},
 			#{param.terminalId, jdbcType=VARCHAR},
 			#{param.employeeId, jdbcType=VARCHAR},
 			#{param.fingerveinId, jdbcType=VARCHAR},

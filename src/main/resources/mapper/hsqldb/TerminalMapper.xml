@@ -9,6 +9,7 @@
 		<result column="STYLE_ID" property="styleId" jdbcType="VARCHAR" />
 		<result column="STATUS" property="status" jdbcType="VARCHAR" />
 		<result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
+		<result column="LOCATION" property="location" jdbcType="VARCHAR" />
 		<result column="HEARTBEAT" property="heartbeat" jdbcType="TIMESTAMP" />
 		<result column="ACTIVE" property="active" jdbcType="INTEGER" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
@@ -26,6 +27,7 @@
 		<result column="STYLE_NAME" property="styleName" jdbcType="VARCHAR" />
 		<result column="STATUS" property="status" jdbcType="VARCHAR" />
 		<result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
+		<result column="LOCATION" property="location" jdbcType="VARCHAR" />
 		<result column="HEARTBEAT" property="heartbeat" jdbcType="TIMESTAMP" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -105,6 +107,7 @@
 			b.NAME STYLE_NAME,
 			a.STATUS,
 			a.IPADDR,
+			a.LOCATION,
 			a.HEARTBEAT,
 			a.CREATE_TIME
 			<include refid="sqlQuery"/>
@@ -156,6 +159,7 @@
 		   STYLE_ID,
 		   STATUS,
 		   IPADDR,
+		   LOCATION,
 		   HEARTBEAT,
 		   VERSION,
 		   CREATE_TIME,
@@ -169,6 +173,7 @@
 		   #{param.styleId, jdbcType=VARCHAR},
 		   #{param.status, jdbcType=VARCHAR},
 		   #{param.ipaddr, jdbcType=VARCHAR},
+		   #{param.location, jdbcType=VARCHAR},
 		   #{param.heartbeat, jdbcType=TIMESTAMP},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
@@ -186,6 +191,7 @@
            STYLE_ID,
            STATUS,
 		   IPADDR,
+		   LOCATION,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
@@ -199,6 +205,7 @@
            #{param.styleId, jdbcType=VARCHAR},
            #{param.status, jdbcType=VARCHAR},
 		   #{param.ipaddr, jdbcType=VARCHAR},
+		   #{param.location, jdbcType=VARCHAR},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
 		   #{param.createBy, jdbcType=VARCHAR},
@@ -226,6 +233,9 @@
 		</if>
 		<if test="param.ipaddr != null and param.ipaddr != ''">
 		 	a.IPADDR = #{param.ipaddr, jdbcType=VARCHAR},
+		</if>
+		<if test="param.location != null and param.location != ''">
+		 	a.LOCATION = #{param.location, jdbcType=VARCHAR},
 		</if>
 		<if test="param.heartbeat != null">
 		 	a.HEARTBEAT = #{param.heartbeat, jdbcType=TIMESTAMP},

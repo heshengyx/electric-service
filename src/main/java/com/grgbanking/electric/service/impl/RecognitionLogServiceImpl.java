@@ -1,9 +1,11 @@
 package com.grgbanking.electric.service.impl;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +24,9 @@ import com.grgbanking.electric.util.UUIDGeneratorUtil;
 @Service("recognitionLogService")
 public class RecognitionLogServiceImpl implements IRecognitionLogService {
 
+	@Value("${fingervein.folder}")
+	private String folder;
+	
     @Autowired
     private IRecognitionLogDao recognitionLogDao;
     
@@ -152,5 +157,19 @@ throw new DataAccessResourceFailureException("采样时间不能为空");
 	@Override
 	public List<RecognitionLogData> queryReport(RecognitionLogQueryParam param) {
 		return recognitionLogDao.queryReport(param);
+	}
+
+	@Override
+	public File exists(String id) {
+		File file = null;
+		RecognitionLog log = recognitionLogDao.getById(id);
+		if (log != null) {
+			String filePath = log.getFilePath();
+			file = new File(folder + File.separator + filePath);
+			if (file.exists()) {
+				throw new IllegalArgumentException("文件不存在");
+			}
+		}
+		return file;
 	}
 }

@@ -142,7 +142,7 @@ public class TreeServiceImpl implements ITreeService {
 				}
 				Map<String, String> attributes = new HashMap<String, String>(1);
 				attributes.put("code", organization.getCode());
-				attributes.put("createTime", DateUtil.getDateTime(organization.getCreateTime()));
+				attributes.put("createTime", DateUtil.getDayTime(organization.getCreateTime()));
 				tree.setAttributes(attributes);
 				treeMap.put(organization.getId(), tree);
 			}
@@ -214,7 +214,7 @@ public class TreeServiceImpl implements ITreeService {
 				Map<String, String> attributes = new HashMap<String, String>(1);
 				attributes.put("code", permission.getCode());
 				attributes.put("url", permission.getUrl());
-				attributes.put("createTime", DateUtil.getDateTime(permission.getCreateTime()));
+				attributes.put("createTime", DateUtil.getDayTime(permission.getCreateTime()));
 				tree.setAttributes(attributes);
 				treeMap.put(permission.getId(), tree);
 			}

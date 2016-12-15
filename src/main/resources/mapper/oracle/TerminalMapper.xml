@@ -26,6 +26,7 @@
 		<result column="STYLE_NAME" property="styleName" jdbcType="VARCHAR" />
 		<result column="STATUS" property="status" jdbcType="VARCHAR" />
 		<result column="IPADDR" property="ipaddr" jdbcType="VARCHAR" />
+		<result column="LOCATION" property="location" jdbcType="VARCHAR" />
 		<result column="HEARTBEAT" property="heartbeat" jdbcType="TIMESTAMP" />
 		<result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
@@ -107,11 +108,12 @@
 							b.NAME STYLE_NAME,
 							a.STATUS,
 							a.IPADDR,
+							a.LOCATION,
 							a.HEARTBEAT,
 							a.CREATE_TIME
 		                  <include refid="sqlQuery"/>
 		                 ORDER BY a.CREATE_TIME DESC) tt
-		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		         WHERE ROWNUM <![CDATA[<=]]> (#{end, jdbcType=INTEGER} + #{start, jdbcType=INTEGER})) t
 		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="countData" resultType="java.lang.Integer">
@@ -131,7 +133,7 @@
 							a.CREATE_TIME
 		                  <include refid="sqlQueryData"/>
 		                 ORDER BY a.CREATE_TIME DESC) tt
-		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		         WHERE ROWNUM <![CDATA[<=]]> (#{end, jdbcType=INTEGER} + #{start, jdbcType=INTEGER})) t
 		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="queryAll" resultMap="terminal">
@@ -164,6 +166,7 @@
 		   STYLE_ID,
 		   STATUS,
 		   IPADDR,
+		   LOCATION,
 		   HEARTBEAT,
 		   VERSION,
 		   CREATE_TIME,
@@ -177,6 +180,7 @@
 		   #{param.styleId, jdbcType=VARCHAR},
 		   #{param.status, jdbcType=VARCHAR},
 		   #{param.ipaddr, jdbcType=VARCHAR},
+		   #{param.location, jdbcType=VARCHAR},
 		   #{param.heartbeat, jdbcType=TIMESTAMP},
 		   #{param.version, jdbcType=INTEGER},
 		   #{param.createTime, jdbcType=TIMESTAMP},
@@ -194,6 +198,7 @@
            STYLE_ID,
            STATUS,
 		   IPADDR,
+		   LOCATION,
 		   VERSION,
 		   CREATE_TIME,
 		   CREATE_BY,
@@ -207,6 +212,7 @@
             #{param.styleId, jdbcType=VARCHAR},
             #{param.status, jdbcType=VARCHAR},
 		    #{param.ipaddr, jdbcType=VARCHAR},
+		    #{param.location, jdbcType=VARCHAR},
 		    #{param.version, jdbcType=INTEGER},
 		    #{param.createTime, jdbcType=TIMESTAMP},
 		    #{param.createBy, jdbcType=VARCHAR},

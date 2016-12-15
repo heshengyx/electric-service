@@ -43,7 +43,7 @@
 		          FROM (SELECT a.*
 		                  <include refid="sqlQuery"/>
 		                 ORDER BY a.CREATE_TIME DESC) tt
-		         WHERE ROWNUM <![CDATA[<=]]> #{end, jdbcType=INTEGER}) t
+		         WHERE ROWNUM <![CDATA[<=]]> (#{end, jdbcType=INTEGER} + #{start, jdbcType=INTEGER})) t
 		 WHERE t.ROWNO <![CDATA[>=]]> #{start, jdbcType=INTEGER}
 	</select>
 	<select id="queryAll" resultMap="roleOrganization">

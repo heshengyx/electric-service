@@ -2,6 +2,7 @@ package com.grgbanking.electric.dao;
 
 import java.util.List;
 
+import com.grgbanking.electric.data.FingerVeinData;
 import com.grgbanking.electric.entity.FingerVein;
 import com.grgbanking.electric.param.FingerVeinQueryParam;
 
@@ -75,4 +76,6 @@ public interface IFingerVeinDao {
      * @return
      */
     List<FingerVein> queryAll(FingerVeinQueryParam param);
+    
+    List<FingerVeinData> queryData();
 }

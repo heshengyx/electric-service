@@ -133,7 +133,7 @@ public class RecognitionServiceImpl implements IRecognitionService {
 	public Result syncTime(String json, String ipaddr) {
 		Result result = new Result();
 		result.setCode(String.valueOf(StatusEnum.SUCCESS.getValue()));
-		result.setMessage(DateUtil.getDateTime(new Date()));
+		result.setMessage(DateUtil.getDayTime(new Date()));
 		return result;
 	}
 
@@ -304,15 +304,21 @@ public class RecognitionServiceImpl implements IRecognitionService {
 			result.setCode(String.valueOf(StatusEnum.FAIL.getValue()));
 			recognitionLog.setStatus(String.valueOf(StatusEnum.FAIL.getValue()));
 		}
+		File file = null;
+		try {
+			file = writeFile(message.toString(), result.getCode(), sample, ipaddr);
+		} catch (Exception e) {
+			LOGGER.error("文件写入失败", e);
+		}
+		if (file != null) {
+			String path = file.getPath();
+			path = path.substring(folder.length() + 1);
+			recognitionLog.setFilePath(path);
+		}
 		try {
 			recognitionLogDao.save(recognitionLog);
 		} catch (Exception e) {
 			LOGGER.error("识别日志保存失败", e);
-		}
-		try {
-			writeFile(message.toString(), result.getCode(), sample, ipaddr);
-		} catch (Exception e) {
-			LOGGER.error("文件写入失败", e);
 		}
 		result.setMessage(message.toString());
 		return result;
@@ -383,7 +389,7 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		return new int[] { similarity[0], index[0] };
 	}
 	
-	private void writeFile(String result, String code, String sample, String ip) {
+	private File writeFile(String result, String code, String sample, String ip) {
 		String folder = this.folder;
 		String[] message = result.split("[=]");
 		if (String.valueOf(StatusEnum.SUCCESS.getValue()).equals(code)) {
@@ -398,8 +404,8 @@ public class RecognitionServiceImpl implements IRecognitionService {
 		if (message.length > 5) {
 			fileName += "_" + message[5];
 		}
-		String date = DateUtil.getDateTime(new Date());
+		String date = DateUtil.getDayTime(new Date());
 		fileName += "_" + message[3] + "_" + date.replaceAll(" ", "_").replaceAll(":", "-");
-		FileUtil.writeFile(file.getPath() + File.separator + fileName + ".bin", sample);
+		return FileUtil.writeFile(file.getPath() + File.separator + fileName + ".bin", sample);
 	}
 }

@@ -1,7 +1,10 @@
 package com.grgbanking.electric.mapper;
 
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
+
+import com.grgbanking.electric.data.FingerVeinData;
 import com.grgbanking.electric.entity.FingerVein;
 import com.grgbanking.electric.param.FingerVeinQueryParam;
 
@@ -69,5 +72,7 @@ public interface IFingerVeinMapper {
      * @return
      */
     List<FingerVein> queryAll(@Param("param") FingerVeinQueryParam param);
+    
+    List<FingerVeinData> queryData();
 }
 

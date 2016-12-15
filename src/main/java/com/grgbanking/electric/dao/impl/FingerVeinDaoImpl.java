@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.grgbanking.electric.dao.IFingerVeinDao;
+import com.grgbanking.electric.data.FingerVeinData;
 import com.grgbanking.electric.entity.FingerVein;
 import com.grgbanking.electric.mapper.IFingerVeinMapper;
 import com.grgbanking.electric.param.FingerVeinQueryParam;
@@ -72,4 +73,9 @@ public class FingerVeinDaoImpl implements IFingerVeinDao {
     public List<FingerVein> queryAll(FingerVeinQueryParam param) {
         return fingerVeinMapper.queryAll(param);
     }
+
+	@Override
+	public List<FingerVeinData> queryData() {
+		return fingerVeinMapper.queryData();
+	}
 }
