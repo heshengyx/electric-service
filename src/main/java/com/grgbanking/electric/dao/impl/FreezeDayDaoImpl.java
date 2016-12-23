@@ -10,7 +10,6 @@ import com.grgbanking.electric.entity.FreezeDay;
 import com.grgbanking.electric.mapper.IFreezeDayMapper;
 import com.grgbanking.electric.param.FreezeDayQueryParam;
 
-
 @Repository
 public class FreezeDayDaoImpl implements IFreezeDayDao {
 

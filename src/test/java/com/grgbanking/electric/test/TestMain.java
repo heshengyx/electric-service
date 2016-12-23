@@ -16,12 +16,14 @@ public class TestMain {
 		//Integer i = 0;
 		System.out.println(role.getId().length());*/
 		
-		Map<String, String> attributes = new HashMap<String, String>(1);
+		/*Map<String, String> attributes = new HashMap<String, String>(1);
 		attributes.put("isTerminal", "true");
 		attributes.put("code", "131331");
 		for (Map.Entry<String, String> entry : attributes.entrySet()) {
 			System.out.println(entry.getValue());
-		}
+		}*/
+		
+		System.out.println(UUIDGeneratorUtil.getUUID());
 	}
 
 }

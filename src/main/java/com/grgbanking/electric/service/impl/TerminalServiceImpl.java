@@ -99,7 +99,7 @@ public class TerminalServiceImpl implements ITerminalService {
 	
 	@Override
 	public void updateByIds(Terminal terminal, String[] id) {
-		if (id == null && id.length == 0) {
+		if (id == null || id.length == 0) {
 			throw new DataAccessResourceFailureException("无数据修改");
 		}
 		List<String> ids = Arrays.asList(id);

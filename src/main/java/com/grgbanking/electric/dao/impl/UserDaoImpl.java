@@ -10,7 +10,6 @@ import com.grgbanking.electric.entity.User;
 import com.grgbanking.electric.mapper.IUserMapper;
 import com.grgbanking.electric.param.UserQueryParam;
 
-
 @Repository
 public class UserDaoImpl implements IUserDao {
 

@@ -166,7 +166,7 @@ throw new DataAccessResourceFailureException("采样时间不能为空");
 		if (log != null) {
 			String filePath = log.getFilePath();
 			file = new File(folder + File.separator + filePath);
-			if (file.exists()) {
+			if (!file.exists()) {
 				throw new IllegalArgumentException("文件不存在");
 			}
 		}
