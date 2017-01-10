@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="electric-service" basedir="." default="default">
+	<property environment="env"/>
+	<property name="project" value="electric-service"/>
+	<property name="version" value="1.0"/>
+	<property name="lib.dir" value="${basedir}/src/main/webapp/WEB-INF/lib"/>
+
+	<property name="src.dir" location="src/main/java"/>
+	<property name="test.dir" location="src/test/java"/>
+	<property name="config.dir" location="src/main/resources"/>
+	<property name="web.root" location="src/main/webapp"/>
+
+	<property name="build.dir" location="target/ant/classes"/>
+	<property name="dist.dir" location="target/dist"/>
+
+	<path id="classpath">
+		<!--添加lib 中的jar 包到软件中-->
+		<fileset dir="${lib.dir}" includes="*.jar"/>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${build.dir}"/>
+	</target>
+
+	<target name="compile" depends="init">
+		<!-- 编译所有的代码,Server and client -->
+		<javac srcdir="${src.dir}"
+               destdir="${build.dir}"
+               encoding="UTF-8"
+               includeantruntime="no"
+               excludes="**/*.svn,*.svn"
+               includes="**/*.java"
+               source="1.7"
+               target="1.7"
+               deprecation="true"
+               failonerror="true"
+               debug="true">
+			<classpath refid="classpath" />
+		</javac>
+
+		<!-- 把所有文件copy到build目录 -->
+		<copy todir="${build.dir}">
+			<fileset dir="${config.dir}" includes="**/*"/>
+		</copy>
+	</target>
+
+	<!--生成war 包结构-->
+	<target name="package" depends="compile">
+		<mkdir dir="${dist.dir}/${version}" />
+		<tstamp>
+			<format property="TIME" pattern="yyMMddHHmm"/>
+		</tstamp>
+
+		<!-- 生成Web配置及部署文件 -->
+		<war destfile="${dist.dir}/${version}/${project}.war"
+             webxml="${web.root}/WEB-INF/web.xml">
+			<fileset dir="${web.root}" excludes="${web.root}/WEB-INF/classes/*">
+			</fileset>
+			<classes dir="${build.dir}" />
+		</war>
+	</target>
+
+	<target name="destory">
+		<delete  includeemptydirs="true">
+			<fileset dir="${build.dir}" includes="**/*" />
+		</delete>
+	</target>
+
+	<target name="default" depends="package,destory">
+	</target>
+</project>
